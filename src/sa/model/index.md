@@ -2,10 +2,10 @@ lecture:
 Software Architecture
 ---
 title: 
-Model of My Project
+Seismo Scraping
 ---
 author:
-Enter Your Full Name
+Christelle Rossier
 ---
  
 # Getting started
@@ -51,13 +51,23 @@ Hint: to choose a meaningful project look at the rest of the modeling tasks whic
 
 }
 
-Project Name: *My Project*
+Project Name: *Seismo Scraping*
 
-Project Type:
+Project Type: Bachelor thesis project I worked on alone last year, which is also a project that is to be continued now with a team
+
+Context/Additional Information: The FSVO is responsible to promote the health and well-being of humans and animals. Among many other tasks, FSVO produces a monthly newsletter called Seismo Info, containing a list of articles presenting some interesting and important information on food safety.
+Link to get the Seismo Info of January 2023 as an example: https://www.blv.admin.ch/dam/blv/en/dokumente/lebensmittel-und-ernaehrung/publikationen-forschung/seismo-info-2023-1.pdf.download.pdf/Seismo Info 01 2023_EN.pdf
+Until a few month ago, FSVO analysed manually a whole list of websites every morning, to check if some interesting articles were published, which was a very time consuming task.
+
 
 Vision Statement:
-
-Additional Information:
+For the FSVO (Federal Food Safety and Veterinary Office)
+Who need an automated solution to get everyday a list of all new food safety-related coming from some specified reference websites.
+The *Seismo Scraping* project
+Is a web platform
+That displays everyday new published articles, allows the user to rate those articles, store them, and offers the possibility to filter them.
+As the project was mandated by the FSVO, and developed especially for them, there is not really some competitors.
+Our project saves the people of the FSVO time and energy by removing the task of manually going through a long list of websites.
 
 
 
