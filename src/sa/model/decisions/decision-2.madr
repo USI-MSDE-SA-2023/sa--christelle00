@@ -1,10 +1,8 @@
 ## ADR #2
 
-1. What did you decide?
+1. Beautiful Soup as Scraping technology
 
-Beautiful Soup as Scraping technology
-
-2. What was the context for your decision?
+2. Context
 
 As the web platform Seismo Scraping displays everyday recent articles from various websites, the system should be able to scrape automatically and everyday those websites to get the articles. 
 We need to find a technology to compute that, giving us enough flexibility to scrape many different websites without having to write one specific script for each. 
@@ -12,22 +10,22 @@ Also, as at the time the project had a certain deadline, the solution had to be 
 
 This decision affects the whole architecture of the scraping part. It does not affect the rest of the backend and the frontend part though. 
 
-3. What is the problem you are trying to solve?
+3. Problem
 
 Which technology should be used to get the desired information on each website?
 
-4.  Which alternative options did you consider?
+4. Alternatives
 Here are the three scraper’s implementations that were considered as an alternative. 
 
 * Off-the-shelf implementations: existing commercial software suites and services, offering a ready-to-user scraper. Example: Octoparse
 * Semi-custom implementations: code is written by the user, using some existing standardized libraries provided in many programming languages. Example: Beautiful Soup
 * Fully custom implementations: developed entirely by the user, including the custom libraries. 
 
-5. Which one did you choose?
+5. Choice
 
 The semi-custom implementation was chosen. 
 
-6. What is the main reason for that?
+6. Reason
 
 The semi-custom implementation has been selected as it provides more flexibility than an off-the-shelf implementation. 
 The scraper is then developed especially to fulfill the needs of the project, but without having to write the libraries from scratch. 

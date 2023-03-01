@@ -1,10 +1,8 @@
 ## ADR #1
 
-1. What did you decide?
+1. Solution in the form of a website
 
-Solution in the form of a website
-
-2. What was the context for your decision?
+2. Context
 
 Clients need a way of getting automatically new articles related to food safety every day so that they do not have to do it manually anymore. 
 The choice of the form of the product will influence the whole system and will influence which technologies to use.
@@ -12,21 +10,21 @@ The choice of the form of the product will influence the whole system and will i
 One constraint is that people working at the FSVO  can't download anything easily on their work computer for security reasons. 
 Also, the product should not be made available for everybody, but only for the FSVO.
 
-3. What is the problem you are trying to solve?
+3. Problem
 
 In what form should the customer's needs be met?
 
-4.  Which alternative options did you consider?
+4. Alternatives
 
 * Website
 * Software to download on the devices at work 
 * Software to download on private devices (tablet, mobile phone)
 
-5. Which one did you choose?
+5. Choice
 
 The website alternative has been chosen.
 
-6. What is the main reason for that?
+6. Reason
 
 The website alternative has been chosen as it is the one creating the least difficulties, both in terms of administration (alternative 2) and development (alternative 3). 
 Indeed, if option 3 had been chosen, it would have been necessary to ensure that the program was compatible with all types of devices and operating systems.

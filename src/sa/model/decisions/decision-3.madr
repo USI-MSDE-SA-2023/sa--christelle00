@@ -1,10 +1,8 @@
 ## ADR #3
 
-1. What did you decide?
+1. Database structured to allow many accounts
 
-Database structured to allow many accounts
-
-2. What was the context for your decision?
+2. Context
 
 The Seismo Scraping tool is intended uniquely for the FSVO office, and especially for the few people that work on the Seismo Info newsletter. 
 So, all users of the platform work towards one specific goal, and all information will eventually be shared between them. 
@@ -12,21 +10,21 @@ The goal is to find the most convenient alternative for the users.
 
 This decision impacts principally the structure of the database (and also the workflow of the users but it does not take part of the architecture).
 
-3. What is the problem you are trying to solve?
+3. Problem
 
 Should the system provide a possibility for different users to grade individually the articles? Should it provide a way to collaborate between users or share information?
 
-4.  Which alternative options did you consider?
+4. Alternatives
 
 * Creation of one unique account for everyone. Everyone sees the same, articles are graded the same way for everyone.
 * Creation of an account for each user, in which all grades are dependent on the user. The same article can be rated differently depending on the user
 * Creation of an account for each user, and creation of groups of users. Each user inside the same group sees the same. Articles are graded the same way for everyone inside a group.
 
-5. Which one did you choose?
+5. Choice
 
 The chosen alternative is the one proposing to create an account for everyone with personalized articles rating for each user (alternative 2). 
 
-6. What is the main reason for that?
+6. Reason
 
 By discussing with the clients, they made it clear that the most convenient thing for them was to have some individual accounts so that they could all express their opinion on the articles. 
 Moreover, users can select the reference sites from which they want to see the articles, so there is still a possibility to divide the work.
