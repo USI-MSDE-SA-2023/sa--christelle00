@@ -1,0 +1,41 @@
+## ADR #3
+
+1. What did you decide?
+
+Solution in the form of a website
+
+2. What was the context for your decision?
+
+Clients need a way of getting automatically new articles related to food safety every day so that they do not have to do it manually anymore. 
+The choice of the form of the product will influence the whole system and will influence which technologies to use.
+
+One constraint is that people working at the FSVO  can't download anything easily on their work computer for security reasons. 
+Also, the product should not be made available for everybody, but only for the FSVO.
+
+3. What is the problem you are trying to solve?
+
+In what form should the customer's needs be met?
+
+4.  Which alternative options did you consider?
+
+* Website
+* Software to download on the devices at work 
+* Software to download on private devices (tablet, mobile phone)
+
+5. Which one did you choose?
+
+The website alternative has been chosen.
+
+6. What is the main reason for that?
+
+The website alternative has been chosen as it is the one creating the least difficulties, both in terms of administration (alternative 2) and development (alternative 3). 
+Indeed, if option 3 had been chosen, it would have been necessary to ensure that the program was compatible with all types of devices and operating systems.
+
+Also, in order for the product not to be available for everybody, a login is required to enter the website, but no possibility to register. 
+That way, only authorized people from the FSVO can access it, and efficiency won’t be reduced because of the traffic of other people. 
+
+Advantages:
+* Respects constraints
+* Available from everywhere
+* Web development architectures are well-known
+* No need to take into account many types of devices or operating systems.
