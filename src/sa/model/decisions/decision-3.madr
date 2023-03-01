@@ -2,40 +2,38 @@
 
 1. What did you decide?
 
-Solution in the form of a website
+Database structured to allow many accounts
 
 2. What was the context for your decision?
 
-Clients need a way of getting automatically new articles related to food safety every day so that they do not have to do it manually anymore. 
-The choice of the form of the product will influence the whole system and will influence which technologies to use.
+The Seismo Scraping tool is intended uniquely for the FSVO office, and especially for the few people that work on the Seismo Info newsletter. 
+So, all users of the platform work towards one specific goal, and all information will eventually be shared between them. 
+The goal is to find the most convenient alternative for the users.
 
-One constraint is that people working at the FSVO  can't download anything easily on their work computer for security reasons. 
-Also, the product should not be made available for everybody, but only for the FSVO.
+This decision impacts principally the structure of the database (and also the workflow of the users but it does not take part of the architecture).
 
 3. What is the problem you are trying to solve?
 
-In what form should the customer's needs be met?
+Should the system provide a possibility for different users to grade individually the articles? Should it provide a way to collaborate between users or share information?
 
 4.  Which alternative options did you consider?
 
-* Website
-* Software to download on the devices at work 
-* Software to download on private devices (tablet, mobile phone)
+* Creation of one unique account for everyone. Everyone sees the same, articles are graded the same way for everyone.
+* Creation of an account for each user, in which all grades are dependent on the user. The same article can be rated differently depending on the user
+* Creation of an account for each user, and creation of groups of users. Each user inside the same group sees the same. Articles are graded the same way for everyone inside a group.
 
 5. Which one did you choose?
 
-The website alternative has been chosen.
+The chosen alternative is the one proposing to create an account for everyone with personalized articles rating for each user (alternative 2). 
 
 6. What is the main reason for that?
 
-The website alternative has been chosen as it is the one creating the least difficulties, both in terms of administration (alternative 2) and development (alternative 3). 
-Indeed, if option 3 had been chosen, it would have been necessary to ensure that the program was compatible with all types of devices and operating systems.
+By discussing with the clients, they made it clear that the most convenient thing for them was to have some individual accounts so that they could all express their opinion on the articles. 
+Moreover, users can select the reference sites from which they want to see the articles, so there is still a possibility to divide the work.
+Also, as only few people work on the articles selection, it would not have made sense to implement a whole user group feature, for at the end only get one single group. 
 
-Also, in order for the product not to be available for everybody, a login is required to enter the website, but no possibility to register. 
-That way, only authorized people from the FSVO can access it, and efficiency won’t be reduced because of the traffic of other people. 
+Advantage:
+* Avoids confusion (e.g. the fact that an article's rating is changed several times because of a disagreement, or that an article that one person might have found interesting was previously trashed by another user.)
 
-Advantages:
-* Respects constraints
-* Available from everywhere
-* Web development architectures are well-known
-* No need to take into account many types of devices or operating systems.
+Disadvantage:
+* For now, people cannot directly confront their opinion on the platform which would be a great feature

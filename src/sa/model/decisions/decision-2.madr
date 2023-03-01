@@ -1,39 +1,43 @@
-## ADR #2
+## ADR #1
 
 1. What did you decide?
 
-Database structured to allow many accounts
+Beautiful Soup as Scraping technology
 
 2. What was the context for your decision?
 
-The Seismo Scraping tool is intended uniquely for the FSVO office, and especially for the few people that work on the Seismo Info newsletter. 
-So, all users of the platform work towards one specific goal, and all information will eventually be shared between them. 
-The goal is to find the most convenient alternative for the users.
+As the web platform Seismo Scraping displays everyday recent articles from various websites, the system should be able to scrape automatically and everyday those websites to get the articles. 
+We need to find a technology to compute that, giving us enough flexibility to scrape many different websites without having to write one specific script for each. 
+Also, as at the time the project had a certain deadline, the solution had to be in place rather quickly.
 
-This decision impacts principally the structure of the database (and also the workflow of the users but it does not take part of the architecture).
+This decision affects the whole architecture of the scraping part. It does not affect the rest of the backend and the frontend part though. 
 
 3. What is the problem you are trying to solve?
 
-Should the system provide a possibility for different users to grade individually the articles? Should it provide a way to collaborate between users or share information?
+Which technology should be used to get the desired information on each website?
 
 4.  Which alternative options did you consider?
+Here are the three scraper’s implementations that were considered as an alternative. 
 
-* Creation of one unique account for everyone. Everyone sees the same, articles are graded the same way for everyone.
-* Creation of an account for each user, in which all grades are dependent on the user. The same article can be rated differently depending on the user
-* Creation of an account for each user, and creation of groups of users. Each user inside the same group sees the same. Articles are graded the same way for everyone inside a group.
+* Off-the-shelf implementations: existing commercial software suites and services, offering a ready-to-user scraper. Example: Octoparse
+* Semi-custom implementations: code is written by the user, using some existing standardized libraries provided in many programming languages. Example: Beautiful Soup
+* Fully custom implementations: developed entirely by the user, including the custom libraries. 
 
 5. Which one did you choose?
 
-The chosen alternative is the one proposing to create an account for everyone with personalized articles rating for each user (alternative 2). 
+The semi-custom implementation was chosen. 
 
 6. What is the main reason for that?
 
-By discussing with the clients, they made it clear that the most convenient thing for them was to have some individual accounts so that they could all express their opinion on the articles. 
-Moreover, users can select the reference sites from which they want to see the articles, so there is still a possibility to divide the work.
-Also, as only few people work on the articles selection, it would not have made sense to implement a whole user group feature, for at the end only get one single group. 
+The semi-custom implementation has been selected as it provides more flexibility than an off-the-shelf implementation. 
+The scraper is then developed especially to fulfill the needs of the project, but without having to write the libraries from scratch. 
+In particular, the BeautifulSoup library has been chosen. 
+A fully custom implementation could have provided more flexibility but it would not have respected the deadline constraint, and the scope of the project does not require some very specific stuffs unavailable in already existing libraries.
 
-Advantage:
-* Avoids confusion (e.g. the fact that an article's rating is changed several times because of a disagreement, or that an article that one person might have found interesting was previously trashed by another user.)
-
-Disadvantage:
-* For now, people cannot directly confront their opinion on the platform which would be a great feature
+Advantages of the selected alternative:
+* No expenses
+* Flexibility
+* Poorly formed document forgiving (BeautifulSoup)
+* Encoding detection (BeautifulSoup)
+* Easy to learn
+* Quick to implement

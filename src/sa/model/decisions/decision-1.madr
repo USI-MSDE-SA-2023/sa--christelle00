@@ -2,42 +2,40 @@
 
 1. What did you decide?
 
-Beautiful Soup as Scraping technology
+Solution in the form of a website
 
 2. What was the context for your decision?
 
-As the web platform Seismo Scraping displays everyday recent articles from various websites, the system should be able to scrape automatically and everyday those websites to get the articles. 
-We need to find a technology to compute that, giving us enough flexibility to scrape many different websites without having to write one specific script for each. 
-Also, as at the time the project had a certain deadline, the solution had to be in place rather quickly.
+Clients need a way of getting automatically new articles related to food safety every day so that they do not have to do it manually anymore. 
+The choice of the form of the product will influence the whole system and will influence which technologies to use.
 
-This decision affects the whole architecture of the scraping part. It does not affect the rest of the backend and the frontend part though. 
+One constraint is that people working at the FSVO  can't download anything easily on their work computer for security reasons. 
+Also, the product should not be made available for everybody, but only for the FSVO.
 
 3. What is the problem you are trying to solve?
 
-Which technology should be used to get the desired information on each website?
+In what form should the customer's needs be met?
 
 4.  Which alternative options did you consider?
-Here are the three scraper’s implementations that were considered as an alternative. 
 
-* Off-the-shelf implementations: existing commercial software suites and services, offering a ready-to-user scraper. Example: Octoparse
-* Semi-custom implementations: code is written by the user, using some existing standardized libraries provided in many programming languages. Example: Beautiful Soup
-* Fully custom implementations: developed entirely by the user, including the custom libraries. 
+* Website
+* Software to download on the devices at work 
+* Software to download on private devices (tablet, mobile phone)
 
 5. Which one did you choose?
 
-The semi-custom implementation was chosen. 
+The website alternative has been chosen.
 
 6. What is the main reason for that?
 
-The semi-custom implementation has been selected as it provides more flexibility than an off-the-shelf implementation. 
-The scraper is then developed especially to fulfill the needs of the project, but without having to write the libraries from scratch. 
-In particular, the BeautifulSoup library has been chosen. 
-A fully custom implementation could have provided more flexibility but it would not have respected the deadline constraint, and the scope of the project does not require some very specific stuffs unavailable in already existing libraries.
+The website alternative has been chosen as it is the one creating the least difficulties, both in terms of administration (alternative 2) and development (alternative 3). 
+Indeed, if option 3 had been chosen, it would have been necessary to ensure that the program was compatible with all types of devices and operating systems.
 
-Advantages of the selected alternative:
-* No expenses
-* Flexibility
-* Poorly formed document forgiving (BeautifulSoup)
-* Encoding detection (BeautifulSoup)
-* Easy to learn
-* Quick to implement
+Also, in order for the product not to be available for everybody, a login is required to enter the website, but no possibility to register. 
+That way, only authorized people from the FSVO can access it, and efficiency won’t be reduced because of the traffic of other people. 
+
+Advantages:
+* Respects constraints
+* Available from everywhere
+* Web development architectures are well-known
+* No need to take into account many types of devices or operating systems.
