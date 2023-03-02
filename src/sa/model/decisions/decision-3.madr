@@ -1,6 +1,6 @@
 ## ADR #3
 
-1. Use a semi-custom scraper implementation
+1. Use the Beautiful Soup library 
 
 2. Context
 
