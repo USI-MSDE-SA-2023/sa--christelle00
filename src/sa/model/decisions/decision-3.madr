@@ -1,37 +1,37 @@
 ## ADR #3
 
-1. Database structured to allow many accounts
+1. Use a semi-custom scraper implementation
 
 2. Context
 
-The Seismo Scraping tool is intended uniquely for the FSVO office, and especially for the few people that work on the Seismo Info newsletter. 
-So, all users of the platform work towards one specific goal, and all information will eventually be shared between them. 
-The goal is to find the most convenient alternative for the users.
+In the previous decision record, we chose to develop the scraping part of the project using a library. 
+We now have to choose one library to work with.
 
-This decision impacts principally the structure of the database (and also the workflow of the users but it does not take part of the architecture).
+Again, we always have the deadline constraint, so we would like to find a library with a fast learning curve and a good documentation.
 
 3. Problem
 
-Should the system provide a possibility for different users to grade individually the articles? Should it provide a way to collaborate between users or share information?
+With which library should we develop the scraping part?
 
 4. Alternatives
 
-* Creation of one unique account for everyone. Everyone sees the same, articles are graded the same way for everyone.
-* Creation of an account for each user, in which all grades are dependent on the user. The same article can be rated differently depending on the user
-* Creation of an account for each user, and creation of groups of users. Each user inside the same group sees the same. Articles are graded the same way for everyone inside a group.
+* Beautiful Soup: open-source Python library
+* Scrapy: complete framework. It provides tools to quickly extract data from websites, analyze it, and dave it in the desired structure and format
+* Selenium: web driver which was at first created for automated web testing but is also used for web scraping.
 
 5. Choice
 
-The chosen alternative is the one proposing to create an account for everyone with personalized articles rating for each user (alternative 2). 
+Beautiful Soup has been selected
 
 6. Reason
 
-By discussing with the clients, they made it clear that the most convenient thing for them was to have some individual accounts so that they could all express their opinion on the articles. 
-Moreover, users can select the reference sites from which they want to see the articles, so there is still a possibility to divide the work.
-Also, as only few people work on the articles selection, it would not have made sense to implement a whole user group feature, for at the end only get one single group. 
+Scrapy and Selenium are both more complex to use, and they both require more resources than Beautiful Soup. 
+Also, Scrapy has a pretty light documentation.
 
-Advantage:
-* Avoids confusion (e.g. the fact that an article's rating is changed several times because of a disagreement, or that an article that one person might have found interesting was previously trashed by another user.)
+Advantages of the selected alternative:
+* Poorly formed document forgiving
+* Encoding detection
+* Easy to learn
 
 Disadvantage:
-* For now, people cannot directly confront their opinion on the platform which would be a great feature
+* Slower speed

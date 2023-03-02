@@ -1,6 +1,6 @@
 ## ADR #2
 
-1. Beautiful Soup as Scraping technology
+1. Use a semi-custom scraper implementation
 
 2. Context
 
@@ -12,7 +12,7 @@ This decision affects the whole architecture of the scraping part. It does not a
 
 3. Problem
 
-Which technology should be used to get the desired information on each website?
+Which scraping solution should  be used to get the desired information on each website?
 
 4. Alternatives
 Here are the three scraper’s implementations that were considered as an alternative. 
@@ -29,13 +29,13 @@ The semi-custom implementation was chosen.
 
 The semi-custom implementation has been selected as it provides more flexibility than an off-the-shelf implementation. 
 The scraper is then developed especially to fulfill the needs of the project, but without having to write the libraries from scratch. 
-In particular, the BeautifulSoup library has been chosen. 
 A fully custom implementation could have provided more flexibility but it would not have respected the deadline constraint, and the scope of the project does not require some very specific stuffs unavailable in already existing libraries.
 
 Advantages of the selected alternative:
 * No expenses
 * Flexibility
-* Poorly formed document forgiving (BeautifulSoup)
-* Encoding detection (BeautifulSoup)
-* Easy to learn
 * Quick to implement
+
+7. Next Decision:
+
+Which library/framework should we use?
