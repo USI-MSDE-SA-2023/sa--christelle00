@@ -336,7 +336,7 @@ skinparam componentStyle rectangle
 skinparam monochrome true
 skinparam shadowing false
 
-rectangle "Failure of the Scraper" {
+rectangle "Normal operation" {
 
 rectangle "Scraper" as Source
 rectangle "99.9%" as Measure
@@ -379,7 +379,7 @@ Exceed: >2 trade-offs
 
 Developing an app natively for each OS is expensive and time consuming, but it benefits from a good performance. Choosing a cross-platform environment on the other hand simplify the development process, making it faster and cheaper, but it might suffer in performance.
 
-## Privacy vs. Usability
+## Security vs. Usability
 
 Including a multi-authentication system allows to guarantee a better security of data privacy. But on the other hand, this adds extra steps to the authentication process, which can sometimes be annoying. For the Seismo Scraping project, as the data inside each account is not that sensible, usability has been preferred over privacy, and the authentication is a simple login with email and password.
 
