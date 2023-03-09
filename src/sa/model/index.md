@@ -166,6 +166,189 @@ Source -> [System] : "Boot"
 
 @enduml
 ```
+
+## Scenario 1
+Quality: _Learnability_
+
+Scenario: 5 minutes should be sufficient for a new user to become familiar with the platform and use it the right way.
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "New User discovers the platform" {
+
+rectangle "New User" as Source
+rectangle "max 5 minutes" as Measure
+
+Source -> [System] : "First interaction"
+
+[System] -> [Measure] : "Familiar"
+
+}
+
+@enduml
+```
+
+## Scenario 2
+Quality: _Deployability_
+
+Scenario: A simple push in the production branch allows to automatically deploy a new version in less than 3 minutes. 
+
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "New Version is ready for deployment" {
+
+rectangle "Admin" as Source
+rectangle "max 3 minutes" as Measure
+
+Source -> [System] : "Push on production"
+
+[System] -> [Measure] : "Deployed"
+
+}
+
+@enduml
+```
+
+## Scenario 3
+Quality: _Scalability_
+
+Scenario: Even with bigger amount of data, the response time of the server to fetch more article data will remain constant, between 20 and 50 ms.
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "Quantity of data increases significantly" {
+
+rectangle "User" as Source
+rectangle "between 20 and 50 ms" as Measure
+
+Source -> [System] : "Request"
+
+[System] -> [Measure] : "Response"
+
+}
+@enduml
+```
+
+## Scenario 4
+Quality: _Customizability_
+
+Scenario: There would the possibility to specialize the system for a total different client, by changing the entries of the websites to scrape. Only one file containing the websites data would have to change.
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "Interest of new clients to use the system" {
+
+rectangle "New Client" as Source
+rectangle "One file" as Measure
+
+Source -> [System] : "Other Source Websites"
+
+[System] -> [Measure] : "Changes"
+
+}
+
+@enduml
+```
+
+## Scenario 5
+Quality: _Time to market_
+
+Scenario: After an update, a new version, or even after the very first version, it can be given right away to the users, and we can start learning from them after a week of testing. 
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "After first or new version has been released" {
+
+rectangle "Team" as Source
+rectangle "Right away " as Measure
+
+Source -> [System] : "Release"
+
+[System] -> [Measure] : "Used by clients"
+
+}
+
+@enduml
+```
+
+## Scenario 6
+Quality: _Compatibility_
+
+Scenario: The interface of the web platform should be sufficiently responsive to be correctly and nicely displayed on different screen sizes (large screens, tablets).
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "Utilization of the platform by the client" {
+
+rectangle "User" as Source
+rectangle "2 screen sizes" as Measure
+
+Source -> [System] : "Change screen size"
+
+[System] -> [Measure] : "Displays correctly"
+
+}
+
+@enduml
+```
+
+## Scenario 7
+Quality: _Availability_
+
+Scenario: The system remains available 99.9% of the time. Even in case of a failure on the scraper side (exceptionally, fails to retrieve the desired information), it remains available, and the user does not even notice the failure.
+
+
+```puml
+@startuml
+
+skinparam componentStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "Failure of the Scraper" {
+
+rectangle "Scraper" as Source
+rectangle "99.9%" as Measure
+
+Source -> [System] : "Failure"
+
+[System] -> [Measure] : "Available"
+
+}
+
+@enduml
+```
  
 
 # Ex - Quality Attribute Tradeoff
@@ -187,6 +370,18 @@ Exceed: >2 trade-offs
 ## Portability vs. Performance (Example)
 
 Developing an app natively for each OS is expensive and time consuming, but it benefits from a good performance. Choosing a cross-platform environment on the other hand simplify the development process, making it faster and cheaper, but it might suffer in performance.
+
+## Privacy vs. Usability
+
+Including a multi-authentication system allows to guarantee a better security of data privacy. But on the other hand, this adds extra steps to the authentication process, which can sometimes be annoying. For the Seismo Scraping project, as the data inside each account is not that sensible, usability has been preferred over privacy, and the authentication is a simple login with email and password.
+
+## Reusability vs. Performance
+
+A reusable software component offers a great advantage, as it can be reused in other softwares, which can save time and resources in the future. But such a component might not be as performant as another one designed specifically for a single software. 
+
+## Usability vs. Performance
+
+A software designed for being very usable to all users, might be less performant for more expert users looking for more complexity. A perfect example is the file systems which are very usable for non-expert users, but not as efficient as the command line terminal.
 
 # Ex - Feature Modeling
 
