@@ -349,6 +349,14 @@ Source -> [System] : "Failure"
 
 @enduml
 ```
+
+{.feedback
+
+1-6: ok
+
+7: Overlap between Environment and Source/Stimulus.
+
+}
  
 
 # Ex - Quality Attribute Tradeoff
@@ -374,6 +382,12 @@ Developing an app natively for each OS is expensive and time consuming, but it b
 ## Privacy vs. Usability
 
 Including a multi-authentication system allows to guarantee a better security of data privacy. But on the other hand, this adds extra steps to the authentication process, which can sometimes be annoying. For the Seismo Scraping project, as the data inside each account is not that sensible, usability has been preferred over privacy, and the authentication is a simple login with email and password.
+
+{.feedback
+
+"Security of Data Privacy" (Authentication is often considered part of Security and would conflict with Privacy as it removes user anonymity)
+
+}
 
 ## Reusability vs. Performance
 
