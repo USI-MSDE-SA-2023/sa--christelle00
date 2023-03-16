@@ -419,6 +419,8 @@ Exceed: Include more than 8 non-trivial features, indicate which are found in yo
 
 }
 
+![Feature Model Diagram](./seismo_scraping_feature.puml)
+
 
 # Ex - Context Diagram
 
@@ -440,7 +442,7 @@ Exceed: >1 User and >1 Dependency, with both incoming and outgoing dependencies
 
 }
 
-
+![Context Diagram](./context.puml)
 
 
 # Ex - Component Model: Top-Down

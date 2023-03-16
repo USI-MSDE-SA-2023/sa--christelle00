@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4_Container>
+
+Person(user_s, "Early Detection Team Member", "")
+Person(user_p, "Risk Assessment Team Member", "")
+
+System_Boundary(boundary, "Seismo Scraping") {
+
+}
+
+System_Ext(fda, "fda.gov")
+System_Ext(eurekalert, "eurekalert.org")
+System_Ext(foodaktuell, "foodaktuell.ch")
+System_Ext(..., "other websites")
+
+Rel(user_s, boundary, "Read and Edit")
+Rel(user_p, boundary, "Read Only")
+Rel(boundary, fda, "Scrapes Articles")
+Rel(boundary, eurekalert, "Scrapes Articles")
+Rel(boundary, foodaktuell, "Scrapes Articles")
+Rel(boundary, ..., "Scrapes Articles")
+@enduml

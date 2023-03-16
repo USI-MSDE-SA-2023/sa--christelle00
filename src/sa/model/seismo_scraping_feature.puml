@@ -1,0 +1,88 @@
+
+@startuml
+
+rectangle "Display Articles" as AA
+rectangle "Display Recent Articles" as AB
+rectangle "Display Graded Articles" as AC
+rectangle "Display Deleted Articles" as AD
+
+AA o-- AB
+AA o-- AC
+AA o-- AD
+
+rectangle "Action" as BB
+
+
+rectangle "Filter" as A
+rectangle "Date" as B
+rectangle "Grade" as C
+rectangle "Plain Text" as Z
+rectangle "Source Websites" as Y
+
+rectangle "Create Keywords" as W
+
+ 
+A *-- B
+A *-- C
+A *-- Z
+A *-- Y
+
+Z --@ W
+
+rectangle "Rating" as E
+rectangle "Out of 5 stars" as F
+rectangle "On a scale form 1 to 10" as G
+ 
+E o-- F
+E o-- G
+
+rectangle "Delete Article" as BC
+
+rectangle "Recover Article" as BD
+
+BC <-[dotted]> BD : exclusive
+E <-[dotted]> BC : exclusive
+E <-[dotted]> BD : exclusive
+
+BB *-- A
+BB *-- E
+BB *-- BC
+BB *-- BD
+
+
+rectangle "Authentication" as H
+
+rectangle "Session" as I
+rectangle "Token Based" as J
+
+H o-- I
+H o-- J
+
+
+rectangle "Screen" as X
+rectangle "Size" as V
+rectangle "Mobile Phones size" as S
+rectangle "Tablet size" as T
+rectangle "Large" as U
+
+X --@ V
+V *-- S
+V *-- T
+V *-- U
+
+rectangle "Articles Monitoring Tool" as R
+
+R --@ AA
+R --0 BB
+R --@ H
+R --@ X
+
+
+C -[dotted]-> AC : require
+C <-[dotted]> AA : exclusive
+C <-[dotted]> AB : exclusive
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
