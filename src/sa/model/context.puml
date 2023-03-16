@@ -8,6 +8,7 @@ System_Boundary(boundary, "Seismo Scraping") {
 
 }
 
+System_Ext(seismo, "Seismo Infos Newsletter")
 System_Ext(fda, "fda.gov")
 System_Ext(eurekalert, "eurekalert.org")
 System_Ext(foodaktuell, "foodaktuell.ch")
@@ -15,6 +16,7 @@ System_Ext(..., "other websites")
 
 Rel(user_s, boundary, "Read and Edit")
 Rel(user_p, boundary, "Read Only")
+Rel(seismo, boundary, "Needs Output")
 Rel(boundary, fda, "Scrapes Articles")
 Rel(boundary, eurekalert, "Scrapes Articles")
 Rel(boundary, foodaktuell, "Scrapes Articles")

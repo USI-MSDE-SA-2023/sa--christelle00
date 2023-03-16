@@ -44,6 +44,8 @@ BC <-[dotted]> BD : exclusive
 E <-[dotted]> BC : exclusive
 E <-[dotted]> BD : exclusive
 
+BD -[dotted]-> AD : require
+
 BB *-- A
 BB *-- E
 BB *-- BC
@@ -60,12 +62,14 @@ H o-- J
 
 
 rectangle "Screen" as X
+rectangle "Personalized Color Theme" as XA
 rectangle "Size" as V
 rectangle "Mobile Phones size" as S
 rectangle "Tablet size" as T
 rectangle "Large" as U
 
 X --@ V
+X --0 XA
 V *-- S
 V *-- T
 V *-- U
@@ -79,8 +83,8 @@ R --@ X
 
 
 C -[dotted]-> AC : require
-C <-[dotted]> AA : exclusive
 C <-[dotted]> AB : exclusive
+C <-[dotted]> AD : exclusive
 
 skinparam monochrome true
 skinparam shadowing false

@@ -421,6 +421,8 @@ Exceed: Include more than 8 non-trivial features, indicate which are found in yo
 
 ![Feature Model Diagram](./seismo_scraping_feature.puml)
 
+All features are implemented in the Seismo Scraping project, apart from the session authentication (token based authentication has been chosen over session authentication), the mobile phones screen size, and the rating system on a scale from 1 to 10 (again, a star rating system has been prefered over a numerical one). Also, the personalized color theme is not implemented.
+
 
 # Ex - Context Diagram
 
