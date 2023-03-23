@@ -554,14 +554,171 @@ Exceed: >6 components (>1 decomposed) and >2 use case/process view
 }
 
 ## Logical View
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title Seismo Scraping
+interface " " as BSP
+interface " " as DBD
+interface " " as FJWT
+interface " " as UAS
+interface " " as UIR
+interface " " as SDB
+interface " " as DBR
+interface " " as DBA
+interface " " as UIP
+interface " " as UIC
+interface " " as DBPR
+interface " " as DBPC
+
+
+
+[Scraping Library] as BS
+[Database <$database{scale=0.33}>] as DB
+[User Interface] as UI
+[Authentication System] as AS
+[Flask JWT Extended] as JWT
+[Rating System] as RS
+
+
+component Scraper as SM {
+   component Scraper as M
+   component "Json Source Websites Repository" as Json
+   M -(0- Json
+}
+
+component "Password Management" as PM {
+  component "Password Change" as PC
+  component "Password Reset" as PR
+  PR -(0- PC
+}
+
+
+UIR -- RS
+BS - BSP
+DB - DBD
+DB -- DBR
+UAS -- AS
+M -- SDB
+DB -- DBA
+DB -- DBPR
+DB -- DBPC
+M --( BSP
+JWT -- FJWT
+AS --( FJWT
+UI --( UAS
+UI --( UIR
+DB --( SDB
+RS --( DBR
+UI --( DBD
+AS --( DBA
+UIP -- PR
+UIC -- PC
+PR --( DBPR
+PC --( DBPC
+UI --( UIP
+UI --( UIC
+
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
 
 
 
 ## Process Views
 
-Use Case: 
+```puml
+@startuml
+title Scrape Articles
+
+participant "Scraper" as M
+participant "Json Source Websites Repository" as JSWR
+participant "Scraping Library" as SL
+participant "Database" as DB
+
+M -> JSWR: Fetch Articles Data
+M -> SL: Scrape Articles
+M -> DB: Write Articles on DB
 
 
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+```puml
+@startuml
+title Read Articles
+
+participant "User Interface" as UI
+participant "Authentication System" as AS
+participant "Database" as DB
+participant "Flask JWT Extended" as FJE
+
+UI -> AS: Authenticate
+AS -> DB: Get User
+AS -> FJE: Create Token
+UI -> DB: Read Articles
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+```puml
+@startuml
+title Read and Grade Articles
+
+participant "User Interface" as UI
+participant "Authentication System" as AS
+participant "Rating System" as RS
+participant "Database" as DB
+participant "Flask JWT Extended" as FJE
+
+
+UI -> AS: Authenticate
+AS -> DB: Get User
+AS -> FJE: Create Token
+UI -> DB: Read Articles
+UI -> RS: Grade Articles
+RS -> DB: Save Gradings
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+```puml
+@startuml
+title Reset Password
+participant "User Interface" as UI
+participant "Password Reset" as PR
+participant "Password Change" as PC
+participant "Database" as DB
+
+UI -> PR: Request to Reset Password
+PR -> DB: Get User
+PR -> PC: Create new Password
+PC -> DB: Store new Password
+
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
 
 # Ex - Component Model: Bottom-Up
 
