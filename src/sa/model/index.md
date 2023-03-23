@@ -560,28 +560,27 @@ skinparam componentStyle rectangle
 
 !include <tupadr3/font-awesome/database>
 
-title Seismo Scraping
+title Seismo Scraping Logical View
 interface " " as BSP
-interface " " as DBD
 interface " " as FJWT
 interface " " as UAS
 interface " " as UIR
 interface " " as SDB
-interface " " as DBR
-interface " " as DBA
 interface " " as UIP
 interface " " as UIC
-interface " " as DBPR
-interface " " as DBPC
+interface " " as DBI
+interface " " as UID
+interface " " as UIA
 
 
 
 [Scraping Library] as BS
 [Database <$database{scale=0.33}>] as DB
 [User Interface] as UI
-[Authentication System] as AS
 [Flask JWT Extended] as JWT
-[Rating System] as RS
+[Rating] as RS
+[Display] as D
+[Actions API] as AA
 
 
 component Scraper as SM {
@@ -590,37 +589,38 @@ component Scraper as SM {
    M -(0- Json
 }
 
-component "Password Management" as PM {
+component "Account Management" as PM {
+  component "Authentication" as AS
   component "Password Change" as PC
   component "Password Reset" as PR
   PR -(0- PC
 }
 
-
+UID -- D
+UIA -- AA
 UIR -- RS
 BS - BSP
-DB - DBD
-DB -- DBR
+DB -- DBI
 UAS -- AS
-M -- SDB
-DB -- DBA
-DB -- DBPR
-DB -- DBPC
+SDB -- DB
 M --( BSP
+M --( SDB
 JWT -- FJWT
 AS --( FJWT
 UI --( UAS
 UI --( UIR
-DB --( SDB
-RS --( DBR
-UI --( DBD
-AS --( DBA
+RS --( DBI
+AS --( DBI
 UIP -- PR
 UIC -- PC
-PR --( DBPR
-PC --( DBPC
+PR --( DBI
+PC --( DBI
 UI --( UIP
 UI --( UIC
+D --( DBI
+AA --( DBI
+UI --( UID
+UI --( UIA
 
 
 
@@ -661,13 +661,15 @@ title Read Articles
 
 participant "User Interface" as UI
 participant "Authentication System" as AS
-participant "Database" as DB
+participant "Display" as D
 participant "Flask JWT Extended" as FJE
+participant "Database" as DB
 
 UI -> AS: Authenticate
 AS -> DB: Get User
 AS -> FJE: Create Token
-UI -> DB: Read Articles
+UI -> D: Read Articles
+D -> DB: Fetch Articles
 
 skinparam monochrome true
 skinparam shadowing false
@@ -681,15 +683,17 @@ title Read and Grade Articles
 
 participant "User Interface" as UI
 participant "Authentication System" as AS
+participant "Display" as D
 participant "Rating System" as RS
-participant "Database" as DB
 participant "Flask JWT Extended" as FJE
+participant "Database" as DB
 
 
 UI -> AS: Authenticate
 AS -> DB: Get User
 AS -> FJE: Create Token
-UI -> DB: Read Articles
+UI -> D: Read Articles
+D -> DB: Fetch Articles
 UI -> RS: Grade Articles
 RS -> DB: Save Gradings
 
