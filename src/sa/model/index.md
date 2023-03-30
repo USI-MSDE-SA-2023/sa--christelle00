@@ -744,6 +744,137 @@ Exceed: Redesign based on >3 reused components (1 Logical View, >1 Process View,
 
 }
 
+## Logical View
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title Seismo Scraping Logical View
+interface " " as BSP
+interface " " as FJWT
+interface " " as UAS
+interface " " as SDB
+interface " " as UIP
+interface " " as UIC
+interface " " as DBI
+interface " " as UID
+interface " " as UIA
+interface " " as FMI
+
+
+
+[BeautifulSoup] as BS #lightgray
+[Database <$database{scale=0.33}>] as DB #lightgray
+[User Interface] as UI
+[Flask JWT Extended] as JWT #lightgray
+[Display API] as D
+[Actions API] as AA
+[Flask Mail] as FM #lightgray
+
+
+component Scraper as SM {
+   component Scraper as M
+   component "Json Source Websites Repository" as Json
+   M -(0- Json
+}
+
+component "Account Management" as PM {
+  component "Authentication" as AS
+  component "Password Change" as PC
+  component "Password Reset" as PR
+  PR -(0- PC
+}
+
+FMI -- FM
+UID -- D
+UIA -- AA
+BS - BSP
+DB -up- DBI
+UAS -- AS
+SDB --- DB
+M -up-( BSP
+M --( SDB
+JWT -- FJWT
+AS -up-( FJWT
+UI --( UAS
+AS --( DBI
+UIP -- PR
+UIC -- PC
+PR --( DBI
+PC --( DBI
+UI --( UIP
+UI --( UIC
+D --( DBI
+AA --( DBI
+UI --( UID
+UI --( UIA
+PR --( FMI
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+BeautifulSoup4 : https://pypi.org/project/beautifulsoup4/
+Flask-Mail : https://pypi.org/project/Flask-Mail/
+Flask-JWT-Extended: https://pypi.org/project/Flask-JWT-Extended/
+MySQL Database: https://www.mysql.com/downloads/
+
+
+
+
+## Process Views
+```puml
+@startuml
+title Scrape Articles
+
+participant "Scraper" as M
+participant "Json Source Websites Repository" as JSWR
+participant "Beautiful Soup" as SL
+participant "Database" as DB
+
+M -> JSWR: Fetch Articles Data
+M -> SL: getPage()
+M -> SL: find()
+M -> DB: INSERT
+
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+```puml
+@startuml
+title Read Articles
+
+participant "User Interface" as UI
+participant "Authentication System" as AS
+participant "Display API" as D
+participant "Flask JWT Extended" as FJE
+participant "Database" as DB
+
+UI -> AS: Authenticate
+AS -> DB: Get User
+AS -> FJE: create_access_token()
+UI -> D: Read Articles
+D -> DB: Fetch Articles
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+## ADR
+![ADR 1](./decisions/bottom-up-decision-1.madr)
+![ADR 2](./decisions/bottom-up-decision-2.madr)
 
 # Ex - Interface/API Specification
 

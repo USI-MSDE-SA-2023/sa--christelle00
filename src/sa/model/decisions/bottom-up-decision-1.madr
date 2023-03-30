@@ -1,0 +1,33 @@
+1. Use the Beautiful Soup library 
+
+2. Context
+
+As developing a custom scraper from scratch is not part of the project, a scraping library has to be chosen.
+Ideally, we would like to find a library with a fast learning curve and a good documentation.
+
+3. Problem
+
+With which library should we develop the scraping part?
+
+4. Alternatives
+
+* Beautiful Soup: open-source Python library
+* Scrapy: complete framework. It provides tools to quickly extract data from websites, analyze it, and dave it in the desired structure and format
+* Selenium: web driver which was at first created for automated web testing but is also used for web scraping.
+
+5. Choice
+
+Beautiful Soup has been selected
+
+6. Reason
+
+Scrapy and Selenium are both more complex to use, and they both require more resources than Beautiful Soup. 
+Also, Scrapy has a pretty light documentation.
+
+Advantages of the selected alternative:
+* Poorly formed document forgiving
+* Encoding detection
+* Easy to learn
+
+Disadvantage:
+* Slower speed

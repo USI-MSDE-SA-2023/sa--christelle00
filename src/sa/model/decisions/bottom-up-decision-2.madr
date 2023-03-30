@@ -1,0 +1,25 @@
+1. Use Flask-Mail extension to send users mails
+
+2. Context
+
+To allow the password reset feature, the system needs to be able to send mails to the users. 
+
+3. Problem
+
+With solution should we use to send emails as easily as possible?
+
+4. Alternatives
+
+* Flask-Mail: extension of Flask to send mails
+* smtplib: python module to set up a secure SMTP connection
+
+5. Choice
+
+Flask-Mail has been selected
+
+6. Reason
+
+As Flask is the framework used to develop the backend, it is more convenient to directly use the existing extension from Flask.
+
+Advantages of the selected alternative:
+* We do not have to configure the server ourself
