@@ -1052,6 +1052,9 @@ skinparam defaultFontName Courier
 @enduml
 ```
 
+### OpenAPI Tree
+<img src="open_api_tree.png" width="600">
+
 # Ex - Connector View
 
 {.instructions
