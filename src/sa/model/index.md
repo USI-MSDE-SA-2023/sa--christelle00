@@ -904,6 +904,154 @@ Exceed: Also, document the Web API using the OpenAPI language. You can use the [
 
 }
 
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title Seismo Scraping Logical View with Interface/API Specification
+
+interface " " as BSP
+interface " " as FJWT
+interface " " as UAS
+interface " " as SDB
+interface " " as UIP
+interface " " as UIC
+interface " " as DBI
+interface " " as UID
+interface " " as UIA
+interface " " as FMI
+
+
+
+[BeautifulSoup] as BS #lightgray
+[Database <$database{scale=0.33}>] as DB #lightgray
+[User Interface] as UI
+[Flask JWT Extended] as JWT #lightgray
+[Display API] as D
+[Actions API] as AA
+[Flask Mail] as FM #lightgray
+
+
+component Scraper as SM {
+   component Scraper as M
+   component "Json Source Websites Repository" as Json
+   M -(0- Json
+}
+
+component "Account Management" as PM {
+  component "Authentication" as AS
+  component "Password Change" as PC
+  component "Password Reset" as PR
+  PR -(0- PC
+}
+
+FMI -- FM
+UID -- D
+UIA -- AA
+BS - BSP
+DB -up- DBI
+UAS -- AS
+SDB --- DB
+M -up-( BSP
+M --( SDB
+JWT -- FJWT
+AS -up-( FJWT
+UI --( UAS
+AS --( DBI
+UIP -- PR
+UIC -- PC
+PR --( DBI
+PC --( DBI
+UI --( UIP
+UI --( UIC
+D --( DBI
+AA --( DBI
+UI --( UID
+UI --( UIA
+PR --( FMI
+
+
+note top of BSP
+operation:
+..
+find()
+find_all()
+end note
+
+note top of FJWT
+operation:
+..
+create_access_token()
+decode_token()
+unset_jwt_cookies()
+jwt_required()
+end note
+
+note right of FMI
+operation:
+..
+send(msg)
+end note
+
+note top of SDB
+operation:
+..
+INSERT into article (article)
+end note
+
+note bottom of DBI
+operations:
+..
+query(Table)
+end note
+
+note top of UID
+endpoints:
+..
+GET /recent_articles
+GET /all_articles
+GET /trash_articles
+GET /articles/<id>
+GET /keywords
+end note
+
+note top of UIA
+endpoints:
+..
+PUT /keywords/<id>
+POST /keywords
+DELETE /keywords/<id>
+PUT /gradings/<id>
+POST /grading-actions
+end note
+
+note top of UIC
+endpoints:
+..
+POST /change_password
+end note
+
+note top of UIP
+endpoints:
+..
+POST /forget
+POST /reset
+end note
+
+note top of UAS
+endpoints:
+..
+POST /login
+end note
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
 # Ex - Connector View
 
 {.instructions
