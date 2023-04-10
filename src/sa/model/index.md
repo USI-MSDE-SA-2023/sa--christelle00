@@ -927,7 +927,9 @@ interface " " as FMI
 
 [BeautifulSoup] as BS #lightgray
 [Database <$database{scale=0.33}>] as DB #lightgray
-[User Interface] as UI
+[User Interface] as RealUI
+[Global API] as UI
+RealUI -(0-UI
 [Flask JWT Extended] as JWT #lightgray
 [Display API] as D
 [Actions API] as AA
@@ -1053,7 +1055,7 @@ skinparam defaultFontName Courier
 ```
 
 ### OpenAPI Tree
-<img src="open_api_tree.png" width="600">
+<img src="open_api_tree2.png" width="600">
 
 # Ex - Connector View
 
