@@ -1082,16 +1082,20 @@ Exceed: introduce a new type of connector and update your existing process view
 
 ![Connector View Diagram](./connector-view.c5)
 
+The executor is a new kind of connector which runs the scraper everyday at a specific hour.
+
 ## Process View
 ```puml
 @startuml
 title Scrape Articles
 
+participant "Executor" as E
 participant "Scraper" as M
 participant "Json Source Websites Repository" as JSWR
 participant "Beautiful Soup" as SL
 participant "Database" as DB
 
+E -> M: run()
 M -> JSWR: read()
 M -> SL: getPage()
 M -> SL: find()

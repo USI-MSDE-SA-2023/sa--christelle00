@@ -1,8 +1,8 @@
 Scraper -> db Shared <- Actions
-db Shared <- Display
-db Shared <- Authentication
-db Shared <- Password Reset
-db Shared <- Password Change
+db Shared -> Display
+db Shared <-> Authentication
+db Shared <-> Password Reset
+db Shared <-> Password Change
 
 User Interface -> web API -> Display
 User Interface -> web API -> Actions
@@ -16,4 +16,7 @@ Password Reset -call-> Flask Mail
 
 Scraper -call-> BeautifulSoup
 
-Scraper -> Read Only File -> Json Source Websites Repository
+Scraper <-file-Json Source Websites Repository
+
+
+Executor -> Scraper
