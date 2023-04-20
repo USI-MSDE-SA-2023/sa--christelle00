@@ -1,0 +1,27 @@
+1. Use a shared database
+
+2. Context
+
+We need a way to store the data the scraper gets from the web, and alo the data coming from the user interface (user data, grades user assigned to articls, ...).
+
+
+3. Problem
+
+Should data coming from the scraper and data coming from the user interface be linked and how?
+
+4. Alternatives
+
+* Shared Database
+* Two different databases - one for the articles data and one for the users data
+
+5. Choice
+
+The shared database alternative has been chosen.
+
+6. Reason
+
+As articles fetched by the scraper need to be displayed on the user interface and that users will directly interact with them, it makes sense to have all the data in one unique shared database.
+
+Advantages:
+* All data in one unique location
+* No duplication of data

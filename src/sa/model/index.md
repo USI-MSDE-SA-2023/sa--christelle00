@@ -1078,6 +1078,35 @@ Exceed: introduce a new type of connector and update your existing process view
 
 }
 
+## Connector View
+
+![Connector View Diagram](./connector-view.c5)
+
+## Process View
+```puml
+@startuml
+title Scrape Articles
+
+participant "Scraper" as M
+participant "Json Source Websites Repository" as JSWR
+participant "Beautiful Soup" as SL
+participant "Database" as DB
+
+M -> JSWR: read()
+M -> SL: getPage()
+M -> SL: find()
+M -> DB: INSERT
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+## ADR
+![Connector Decision](./decisions/connector-decision.madr)
+
 # Ex - Adapters and Coupling
 
 {.instructions

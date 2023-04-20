@@ -1,0 +1,19 @@
+Scraper -> db Shared <- Actions
+db Shared <- Display
+db Shared <- Authentication
+db Shared <- Password Reset
+db Shared <- Password Change
+
+User Interface -> web API -> Display
+User Interface -> web API -> Actions
+User Interface -> web API -> Authentication
+User Interface -> web API -> Password Reset
+User Interface -> web API -> Password Change
+
+Password Reset -call-> Password Change
+Authentication -call-> Flask JWT Extended
+Password Reset -call-> Flask Mail
+
+Scraper -call-> BeautifulSoup
+
+Scraper -> Read Only File -> Json Source Websites Repository
