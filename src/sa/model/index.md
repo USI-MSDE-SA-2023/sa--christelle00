@@ -1148,8 +1148,275 @@ Whenever you have a connector you couple together the components and different c
 
 }
 
+### 1.
+
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title Seismo Scraping Logical with Adapters
+
+interface " " as BSP
+interface " " as FJWT
+interface " " as UAS
+interface " " as SDB
+interface " " as UIP
+interface " " as UIC
+interface " " as DBI
+interface " " as UID
+interface " " as UIA
+interface " " as FMI
+interface " " as IDA
+interface " " as IA2S
 
 
+
+[BeautifulSoup] as BS #lightgray
+[Database <$database{scale=0.33}>] as DB #lightgray
+[User Interface] as RealUI
+[Global API] as UI
+RealUI -(0-UI
+[Flask JWT Extended] as JWT #lightgray
+[Display API] as D
+[Actions API] as AA
+[Flask Mail] as FM #lightgray
+
+[Date Adapter] as DA #gray
+[Async2Sync Adapter] as A2S #gray
+
+
+
+component Scraper as SM {
+   component Scraper as M
+   component "Json Source Websites Repository" as Json
+   M -(0- Json
+}
+
+component "Account Management" as PM {
+  component "Authentication" as AS
+  component "Password Change" as PC
+  component "Password Reset" as PR
+  PR -(0- PC
+}
+
+FMI -- FM
+UID -- D
+UIA -- AA
+BS - BSP
+DB -up- DBI
+UAS -- AS
+SDB --- DB
+M -up-( BSP
+M --( IDA
+IDA -- DA
+DA --( SDB
+JWT -- FJWT
+AS -up-( FJWT
+UI --( UAS
+AS --( DBI
+UIP -- PR
+UIC -- PC
+PR --( DBI
+PC --( DBI
+UI --( UIP
+UI --( UIC
+D --( DBI
+AA --( DBI
+UI --( UID
+UI --( UIA
+PR --( IA2S
+IA2S -- A2S
+A2S --( FMI
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+### 2.
+We need an adapter between the Scraper and the Shared Database, to format the date scraped from the web, to the right format in order to be stored in the shared database. Indeed the SQL DATE has the format YYYY-MM-DD, but not every date taken from the web has this format, that's why an adapter is needed between the two.
+
+
+Another needed adapter is between Flask Mail and the Password Reset Component. Indeed, the Password Reset Component needs to send a mail asynchronously, because we do not want to wait until the message is sent, but the send() method of Flask Mail is synchronous. So we need an Async2Sync adapter.
+
+### 3.
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title Seismo Scraping Logical with Adapters and Wrapper
+
+interface " " as BSP
+interface " " as FJWT
+interface " " as UAS
+interface " " as SDB
+interface " " as UIP
+interface " " as UIC
+interface " " as DBI
+interface " " as UID
+interface " " as UIA
+interface " " as FMI
+interface " " as IA2S
+
+
+
+[BeautifulSoup] as BS #lightgray
+[Database <$database{scale=0.33}>] as DB #lightgray
+[User Interface] as RealUI
+[Global API] as UI
+RealUI -(0-UI
+[Flask JWT Extended] as JWT #lightgray
+[Display API] as D
+[Actions API] as AA
+[Flask Mail] as FM #lightgray
+
+[Async2Sync Adapter] as A2S #gray
+
+
+
+component Scraper as SM {
+   component Wrapper as W {
+    component Scraper as M
+    component Adapter as DA #gray
+    M -(0 DA
+   }
+   component "Json Source Websites Repository" as Json
+   M -(0- Json
+}
+
+component "Account Management" as PM {
+  component "Authentication" as AS
+  component "Password Change" as PC
+  component "Password Reset" as PR
+  PR -(0- PC
+}
+
+FMI -- FM
+UID -- D
+UIA -- AA
+BS - BSP
+DB -up- DBI
+UAS -- AS
+SDB --- DB
+M -up-( BSP
+DA --( SDB
+JWT -- FJWT
+AS -up-( FJWT
+UI --( UAS
+AS --( DBI
+UIP -- PR
+UIC -- PC
+PR --( DBI
+PC --( DBI
+UI --( UIP
+UI --( UIC
+D --( DBI
+AA --( DBI
+UI --( UID
+UI --( UIA
+PR --( IA2S
+IA2S -- A2S
+A2S --( FMI
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+### 4.
+A standard interface could be useful in my domain to take a date in whatever format and transform it in the DATE SQL format. However, I did not find any standard doing it. 
+
+### 5.
+Coupling facets between User Interface Component and Display Component
+
+- Discovery: location of the component is written in a configuration file
+- Interaction: the client must directly connect to the component
+- Timing: the client and the component must be available at the smae time -> connector is synchronous
+- Session: the UI and Display components do not share any session state. Each request/message is independent
+
+### 6.
+Date Adapter:
+```python
+def formatDate(self, nonFormattedDate):
+        # Formatted date should be "AAAA-MM-DD"
+        try:
+            dateRegex1 = re.compile(self.site.dateRegex1)
+            if dateRegex1.search(nonFormattedDate) is not None:
+                date = dateRegex1.search(nonFormattedDate)
+                year = date.group()[self.site.year1a:self.site.year1b]
+                if self.site.months:
+                    month = months(date.group()[self.site.month1a:self.site.month1b])
+                else:
+                    month = date.group()[self.site.month1a:self.site.month1b]
+                day = date.group()[self.site.day1a:self.site.day1b]
+
+
+            elif self.site.dateRegex2 is not None:
+                dateRegex2 = re.compile(self.site.dateRegex2)
+                date = dateRegex2.search(nonFormattedDate)
+                year = date.group()[self.site.year2a:self.site.year2b]
+                if self.site.months:
+                    month = months(date.group()[self.site.month2a:self.site.month2b])
+                else:
+                    month = date.group()[self.site.month2a:self.site.month2b]
+                day = "0"+date.group()[self.site.day2a:self.site.day2b]
+
+            formattedDate = year+'-'+month+'-'+day
+
+        except:
+            return None
+            pass
+        #print(formattedDate)
+        return formattedDate
+
+```
+
+Async2Sync Adapter:
+```python
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+def send_email(subject, sender, recipients, text_body, html_body):
+    msg = Message(subject, sender=sender, recipients=recipients)
+    msg.body = text_body
+    msg.html = html_body
+    Thread(target=send_async_email, args=(app, msg)).start()
+
+@app.route('/forget', methods = ['POST'])
+def forgot_password():
+    host_url = app.config['HOST_URL']
+
+    email = request.json['email']
+    url = host_url + '/reset-password'
+
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        return jsonify({"msg": "email does not exist in db"})
+    expires = timedelta(hours=24)
+    reset_token = create_access_token(str(user.id), expires_delta=expires)
+
+    send_email('Reset Your Password',
+                sender=app.config['MAIL_USERNAME'],
+                recipients=[user.email],
+                text_body=render_template('email/reset-password.txt',
+                                          url= url + '?token=' + reset_token),
+                html_body=render_template('email/reset-password.html',
+                                            url=url + '?token=' + reset_token))
+    return jsonify({"msg": "password has been reset successfully"})
+```
+
+
+### 7. 
+I did not find any coupling that could be minimized without altering the system in the existing logical view
 
 # Ex - Physical and Deployment Views
 
