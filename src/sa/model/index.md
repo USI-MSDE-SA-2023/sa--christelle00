@@ -1332,7 +1332,7 @@ skinparam defaultFontName Courier
 ```
 
 ### 4.
-A standard interface could be useful in my domain to take a date in whatever format and transform it in the DATE SQL format. However, I did not find any standard doing it. 
+A standard interface could be useful in my domain to take a date in whatever format and transform it in the DATE SQL format, so that the storage of the data in the database could be done in an easier and cleaner way. However, I did not find any standard doing it online. 
 
 ### 5.
 Coupling facets between User Interface Component and Display Component
