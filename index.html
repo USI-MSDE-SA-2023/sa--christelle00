@@ -273,6 +273,9 @@ footer {
 <a class="d3" href="#6">6.</a>
 <a class="d3" href="#7">7.</a>
 <a class="d1" href="#ex---physical-and-deployment-views"><span class='task'>11.</span>  Physical and Deployment Views</a>
+<a class="d3" href="#container-view">Container View</a>
+<a class="d3" href="#deployment-view">Deployment View</a>
+<a class="d3" href="#adr">ADR</a>
 <a class="d1" href="#ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</a>
 <a class="d1" href="#ex---flexibility"><span class='task'>13.</span>  Flexibility</a>
 
@@ -872,7 +875,46 @@ def forgot_password():
 <li>configure a GitHub webhook to be called whenever you push changes to your documentation</li>
 <li>setup a GitHub action (or similar) to build and publish your documentation on a website</li>
 </ul>
-<section class="pass"><span>&starf;&star;&star;: </span>1 physical view, 1 deployment view, 1 ADR (b.)</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;1 physical view, &gt;1 deployment view, 1 ADR (b.)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1 physical view, 1 deployment view, 1 ADR (b.) + 1 demo (c.)</section></section><h1 id="ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</h1>
+<section class="pass"><span>&starf;&star;&star;: </span>1 physical view, 1 deployment view, 1 ADR (b.)</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;1 physical view, &gt;1 deployment view, 1 ADR (b.)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1 physical view, 1 deployment view, 1 ADR (b.) + 1 demo (c.)</section></section><h3 id="container-view">Container View</h3>
+<img src="./puml_e24.svg"><h3 id="deployment-view">Deployment View</h3>
+<img src="./puml_e25.svg"><h3 id="adr-2">ADR</h3>
+<p><h3>Deployment Decision</h3><ol>
+<li><p>The Blue/green deployment strategy has been adopted</p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>A deployment strategy has to be chosen in order to deploy the system in a safe way. Also, as the project is at 
+the beginning a prototype, all the requested source websites were at the beginning not present. So, as the user need them, all users would like to see the updates as soon as possible.</p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>Which deployment strategy should be used to deploy the system?</p>
+<ol start="4">
+<li>Alternatives</li>
+</ol>
+<ul>
+<li>Big Bang</li>
+<li>Blue/green</li>
+<li>Shadow</li>
+<li>Pilot</li>
+<li>Gradual phase-in</li>
+<li>Canary</li>
+<li>A/B testing</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>The Blue/green alternative has been chosen</p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>As very few users are using the system, it does not make any sens to use alternatives as Pilot, A/B Testing, Canary or gradual phase-in.
+The prefered alternative is thus for all the users to directly see all the new changes.
+Also, as we have the constraint that the users would like to get the updates as soon as possible (for now) the shadow alternative is not chosen.
+Then, the blue/green alternative is preferred over the big bang one, so that we could switch to the previous version in case of problems.</p>
+</p>
+<h1 id="ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</h1>
 <section class="instructions "><p>The goal of this week is to plan how to deliver your software as a service with high availability.</p>
 <ol>
 <li>If necessary, change your deployment design so that your software is hosted on a server (which could be running as a Cloud VM). Your SaaS architecture should show how your SaaS can be remotely accessed from a client such as a Web browser, or a mobile app</li>
@@ -903,7 +945,7 @@ def forgot_password():
 
 
 <footer>
-    5/4/2023, 12:48:59 PM
+    5/4/2023, 1:12:14 PM
 </footer>
 
 </body>
