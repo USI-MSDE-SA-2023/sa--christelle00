@@ -1,0 +1,911 @@
+<html>
+
+<head>
+    <title>Christelle Rossier - Seismo Scraping</title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Fira+Sans|Fira+Mono">
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.0/build/styles/default.min.css">
+    <style>
+        body,
+        * {
+            font-family: "Fira Sans";
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 1em;
+        }
+
+        #usi-logo {
+            width: 75px;
+            height: 75px;
+        }
+
+        header {
+            display: flex;
+            align-content: space-between;
+            width: 100%;
+            justify-items: center;
+        }
+
+        header ul {
+            list-style: none;
+        }
+
+        header .title {
+            flex: 1;
+            margin-left: 1em;
+        }
+
+        html {
+            min-height: 100vh;
+        }
+
+        pre,
+        code {
+            font-family: "Fira Mono"
+        }
+
+        pre {
+            background: rgb(202, 227, 255);
+            padding: 1em;
+        }
+
+        td {
+            text-align: center
+        }
+
+        td:last-child {
+            text-align: left;
+        }
+
+        th {
+            font-weight: normal;
+            color: rgb(0, 61, 131);
+        }
+
+        thead {
+            border-bottom: 2px solid rgb(202, 227, 255);
+        }
+
+        table {
+            width: 100%
+        }
+
+        span.task {
+            display: inline-flex;
+            border-radius: 50%;
+            border: 1px solid white;
+            background: #ffbc00;
+            width: 2em;
+            height: 2em;
+            justify-content: center;
+            align-items: center;
+            font-weight: normal;
+            margin-top: 2em;
+        }
+
+        section.feedback {
+            padding: 2em;
+            background-color: rgb(92, 192, 223);
+            background-image: linear-gradient(1deg, white, transparent,rgba(255,255,255,0.5) 90%,transparent 100%);
+        }
+
+        section.instructions {
+            padding: 2em;
+            background-color: rgb(255, 241, 196);
+            background-image: linear-gradient(1deg, white, transparent,rgba(255,255,255,0.5) 90%,transparent 100%);
+        }
+
+        section.instructions::before {
+            content: "Task Description";
+            font-size: 1.75em;
+            color: #ffbc00;
+            font-weight: bold;
+            transform: translateY(-2em) rotate(1deg);
+            display: block;
+            margin-bottom: -2em;
+            text-align: center;
+        }
+
+        section.pass, section.exceed, section.ok {
+            margin-top: 1em;
+        }
+
+        section.pass span, section.exceed span, section.hint span, section.ok span {
+            margin-right: 0.5em;
+            padding: 0.5em;
+            display: inline-block;
+        }
+
+        section.pass {
+            border: 2px solid green;
+        }
+
+        section.ok {
+            border: 2px solid rgb(6, 175, 6);
+        }
+
+        section.exceed {
+            border: 2px solid rgb(34, 255, 34);
+        }
+
+        section.hint {
+            border: 2px solid rgb(255, 214, 34);
+        }
+
+        section.pass span {
+            background-color: green; color: white;
+            background-image: linear-gradient(45deg, #000000a6, transparent);
+        }
+
+        section.ok span {
+            background-color: rgb(6, 175, 6); color: white;
+            background-image: linear-gradient(135deg, #000000a6, transparent);
+        }
+
+        section.exceed span {
+            background-color: rgb(34, 255, 34); 
+            background-image: linear-gradient(-45deg, white, transparent);
+        }
+
+        section.hint span {
+            background-color: rgb(255, 214, 34);
+            background-image: linear-gradient(-45deg, white, transparent);
+        }
+
+        .deadline {
+            text-align: right;
+        }
+
+        p.deadline {
+            font-size: 2em;
+        }
+
+        .deadline b {
+            border-bottom: 1px solid black;
+        }
+
+        form label {
+            display: inline-block;
+            margin-right: 1em;
+            vertical-align: middle;
+        }
+
+        blockquote {
+   border-left: 10px solid #fff2ca;
+   padding-left: 2em;
+   margin: 1em;
+}
+
+
+form button {
+    min-width: 10em;
+    min-height: 2em;
+    background: #008d4f;
+    color: white;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+form input[type=text],
+form textarea,
+form select {
+    flex: 3;
+    margin: 0.5em;
+	font-size: 1.1em;
+}	
+
+form p { display: flex; 
+	align-items: stretch;
+    min-height: 2.5em;
+    padding-left: 0.5em; 
+flex-direction: column}
+
+nav .task {display: unset; background:white}
+
+nav .d1 {display: block}
+nav .d1 + .d2 {margin-left: 2em}
+nav .d2 {margin-left: 1em}
+
+footer {
+    text-align: center; color: gray;
+}
+
+    </style>
+</head>
+<body>
+
+    <header>    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="usi-logo" x="0px" y="0px" width="200" height="200" viewBox="0 0 200 200" style="enable-background:new 0 0 200 200;" xml:space="preserve" class="injected-svg svg">
+        <g>
+            <path d="M180,41.7h-51.1V31.1h42.2C153.1,12.5,127.8,1,99.9,1C45.2,1.1,0.9,45.4,1,100.1c0,26.8,10.7,51.1,28.1,68.9   c-1.4-2-2.4-4.1-3-6.1c-1-3.5-1-5.9-1.1-15.8v-47.1h14.8v48.5c0,3.4-0.1,6.6,1,9.6c3,7.6,11.3,8.5,16,8.5c2.3,0,8.3-0.1,12.6-3.9   c4.4-3.9,4.4-8.4,4.4-15v-47.7h14.9v49.7c-0.1,8.9-0.1,16.3-8.5,23.5c-8,7-18.4,7.7-23.8,7.7c-4.8,0-9.5-0.6-14-2.1   c-1.8-0.6-3.5-1.4-5-2.3c17.1,14,39,22.4,62.8,22.4c54.7-0.1,99-44.4,98.9-99.1C199,78.1,191.9,58,180,41.7z M175.3,94.4l-6.3-9   c2.1-1.4,8.7-5.7,8.7-17.7c0-2-0.2-4.1-1-6.2c-1.7-4.1-4.6-4.9-6.6-4.9c-3.6,0-4.9,2.5-5.7,4.3c-0.5,1.3-0.6,1.5-1.8,6.6l-1.5,6.9   c-0.9,3.6-1.3,5.4-2,7.2c-1.1,2.6-4.5,9.6-14,9.6c-10.9,0-17.8-9.2-17.8-22.6c0-12.3,6.1-19,11.6-23l6.6,8.8   c-2.8,1.9-8.5,5.7-8.5,14.8c0,5.8,2.6,10.8,7,10.8c4.9,0,5.8-5.3,6.8-10.5l1.3-5.9c1.6-7.7,4.8-18.6,17-18.6   c13.1,0,18.4,12.2,18.4,24.3c0,3.2-0.3,6.7-1.3,10.2C185.1,83.4,182.3,90.1,175.3,94.4z"></path>
+        </g>
+        </svg>
+        <div class="title">
+            <h2>Software Architecture</h2>
+            <h1>Seismo Scraping</h1>
+        </div>
+        <ul>
+            <li>Christelle Rossier</li>
+        </ul>
+        </header>
+
+        <nav>
+            <h1>Table of Contents</h1>
+            <a class="d1" href="#getting-started">Getting started</a>
+<a class="d1" href="#ex---domain-selection"><span class='task'>0.</span>  Domain Selection</a>
+<a class="d1" href="#ex---architectural-decision-records"><span class='task'>1.</span>  Architectural Decision Records</a>
+<a class="d1" href="#ex---quality-attribute-scenario"><span class='task'>2.</span>  Quality Attribute Scenario</a>
+<a class="d2" href="#example-scenario">Example Scenario</a>
+<a class="d2" href="#scenario-1">Scenario 1</a>
+<a class="d2" href="#scenario-2">Scenario 2</a>
+<a class="d2" href="#scenario-3">Scenario 3</a>
+<a class="d2" href="#scenario-4">Scenario 4</a>
+<a class="d2" href="#scenario-5">Scenario 5</a>
+<a class="d2" href="#scenario-6">Scenario 6</a>
+<a class="d2" href="#scenario-7">Scenario 7</a>
+<a class="d1" href="#ex---quality-attribute-tradeoff"><span class='task'>3.</span>  Quality Attribute Tradeoff</a>
+<a class="d2" href="#portability-vs-performance-example">Portability vs. Performance (Example)</a>
+<a class="d2" href="#security-vs-usability">Security vs. Usability</a>
+<a class="d2" href="#reusability-vs-performance">Reusability vs. Performance</a>
+<a class="d2" href="#usability-vs-performance">Usability vs. Performance</a>
+<a class="d1" href="#ex---feature-modeling"><span class='task'>4.</span>  Feature Modeling</a>
+<a class="d1" href="#ex---context-diagram"><span class='task'>5.</span>  Context Diagram</a>
+<a class="d1" href="#ex---component-model-top-down"><span class='task'>6.</span>  Component Model: Top-Down</a>
+<a class="d2" href="#logical-view">Logical View</a>
+<a class="d2" href="#process-views">Process Views</a>
+<a class="d1" href="#ex---component-model-bottom-up"><span class='task'>7.</span>  Component Model: Bottom-Up</a>
+<a class="d2" href="#logical-view">Logical View</a>
+<a class="d2" href="#process-views">Process Views</a>
+<a class="d2" href="#adr">ADR</a>
+<a class="d1" href="#ex---interfaceapi-specification"><span class='task'>8.</span>  Interface/API Specification</a>
+<a class="d3" href="#openapi-tree">OpenAPI Tree</a>
+<a class="d1" href="#ex---connector-view"><span class='task'>9.</span>  Connector View</a>
+<a class="d2" href="#connector-view">Connector View</a>
+<a class="d2" href="#process-view">Process View</a>
+<a class="d2" href="#adr">ADR</a>
+<a class="d1" href="#ex---adapters-and-coupling"><span class='task'>10.</span>  Adapters and Coupling</a>
+<a class="d2" href="#hints">Hints</a>
+<a class="d3" href="#1">1.</a>
+<a class="d3" href="#2">2.</a>
+<a class="d3" href="#3">3.</a>
+<a class="d3" href="#4">4.</a>
+<a class="d3" href="#5">5.</a>
+<a class="d3" href="#6">6.</a>
+<a class="d3" href="#7">7.</a>
+<a class="d1" href="#ex---physical-and-deployment-views"><span class='task'>11.</span>  Physical and Deployment Views</a>
+<a class="d1" href="#ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</a>
+<a class="d1" href="#ex---flexibility"><span class='task'>13.</span>  Flexibility</a>
+
+        </nav>
+
+    <main>
+        <h1 id="getting-started">Getting started</h1>
+<p>You will use <a href="https://www.markdownguide.org/cheat-sheetplan">Markdown</a>, <a href="https://plantuml.com/">PlantUML</a>, <a href="https://github.com/adr/madr">architectural decision records</a>, feature models and connector views to describe a software architecture model about your own project.</p>
+<p>This document will grow during the semester as you sketch and refine your software architecture model.</p>
+<p>When you are done with each task, please push so we can give you feedback about your work.</p>
+<p>We begin by selecting a suitable project domain.</p>
+<h1 id="ex---domain-selection"><span class='task'>0.</span>  Domain Selection</h1>
+<section class="instructions"><p>Submit the name and brief description (about 100 words) of your domain using the following vision statement template:</p>
+<pre><code>For [target customers]
+Who [need/opportunity/problem]
+The [name your project]
+Is  [type of project]
+That [major features, core benefits, compelling reason to buy]
+Unlike [current reality or competitors]
+Our Project [summarize main advantages over status quo, unique selling point]
+</code></pre>
+<p>Please indicate if your choice is:</p>
+<ul>
+<li>a project you have worked on in the past (by yourself or with a team)</li>
+<li>a project you are going to work on this semester in another lecture (which one?)</li>
+<li>a new project you plan to build in the future</li>
+<li>some existing open source project you are interested to contribute to</li>
+</ul>
+<p>The chosen domain should be unique for each student.</p>
+<p>Please be ready to give a 2 minute presentation about it (you can use one slide but it&#39;s not necessary)</p>
+<section class="hint"><span>Hint: </span>to choose a meaningful project look at the rest of the modeling tasks which you are going to perform in the context of your domain.</section></section><p>Project Name: <em>Seismo Scraping</em></p>
+<p>Project Type: Bachelor thesis project I worked on alone last year, which is also a project that is to be continued now with a team</p>
+<p>Context/Additional Information: The FSVO is responsible to promote the health and well-being of humans and animals. Among many other tasks, FSVO produces a monthly newsletter called Seismo Info, containing a list of articles presenting some interesting and important information on food safety.
+Link to get the Seismo Info of January 2023 as an example: <a href="https://www.blv.admin.ch/dam/blv/en/dokumente/lebensmittel-und-ernaehrung/publikationen-forschung/seismo-info-2023-1.pdf.download.pdf/Seismo">https://www.blv.admin.ch/dam/blv/en/dokumente/lebensmittel-und-ernaehrung/publikationen-forschung/seismo-info-2023-1.pdf.download.pdf/Seismo</a> Info 01 2023_EN.pdf
+Until a few month ago, FSVO analysed manually a whole list of websites every morning, to check if some interesting articles were published, which was a very time consuming task.</p>
+<p>Vision Statement:
+For the FSVO (Federal Food Safety and Veterinary Office)
+Who need an automated solution to get everyday a list of all new food safety-related coming from some specified reference websites.
+The <em>Seismo Scraping</em> project
+Is a web platform
+That displays everyday new published articles, allows the user to rate those articles, store them, and offers the possibility to filter them.
+As the project was mandated by the FSVO, and developed especially for them, there is not really some competitors.
+Our project saves the people of the FSVO time and energy by removing the task of manually going through a long list of websites.</p>
+<h1 id="ex---architectural-decision-records"><span class='task'>1.</span>  Architectural Decision Records</h1>
+<section class="instructions"><p>Software architecture is about making design decisions that will impact the quality of the software you plan to build.</p>
+<p>Let&#39;s practice how to describe an architectural decision. We will keep using ADRs to document architectural decisions in the rest of the model.</p>
+<p>Use the following template to capture one or more architectural design decisions in the context of your project domain</p>
+<section class="pass"><span>&starf;&star;&star;: </span>1 ADR</section><section class="ok"><span>&starf;&starf;&star;: </span>2 ADR</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;2 ADR</section></section><p><h3>Architectural Decision Record Template</h3><h2 id="adr-0-template">ADR #0 (Template)</h2>
+<ol>
+<li>What did you decide?</li>
+</ol>
+<p>Give a short title of solved problem and solution</p>
+<ol start="2">
+<li>What was the context for your decision?</li>
+</ol>
+<p>What is the goal you are trying to achieve?</p>
+<p>What are the constraints?</p>
+<p>What is the scope of your decision? Does it affect the entire architecture?</p>
+<ol start="3">
+<li>What is the problem you are trying to solve?</li>
+</ol>
+<p>You may want to articulate the problem in form of a question.</p>
+<ol start="4">
+<li>Which alternative options did you consider?</li>
+</ol>
+<p>List at least 3 options</p>
+<ol start="5">
+<li>Which one did you choose?</li>
+</ol>
+<p>Pick one of the options as the outcome of your decision</p>
+<ol start="6">
+<li>What is the main reason for that?</li>
+</ol>
+<p>List the positive consequences (pros) of your decision:</p>
+<ul>
+<li>quality improvement</li>
+<li>satisfaction of external constraint</li>
+</ul>
+<p>If any, list the negative consequences (cons)</p>
+<ul>
+<li>quality degradation</li>
+</ul>
+</p>
+<p><h3>Decision 1</h3><h2 id="adr-1">ADR #1</h2>
+<ol>
+<li><p>Solution in the form of a website</p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>Clients need a way of getting automatically new articles related to food safety every day so that they do not have to do it manually anymore. 
+The choice of the form of the product will influence the whole system and will influence which technologies to use.</p>
+<p>One constraint is that people working at the FSVO  can&#39;t download anything easily on their work computer for security reasons. 
+Also, the product should not be made available for everybody, but only for the FSVO.</p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>In what form should the customer&#39;s needs be met?</p>
+<ol start="4">
+<li>Alternatives</li>
+</ol>
+<ul>
+<li>Website</li>
+<li>Software to download on the devices at work </li>
+<li>Software to download on private devices (tablet, mobile phone)</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>The website alternative has been chosen.</p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>The website alternative has been chosen as it is the one creating the least difficulties, both in terms of administration (alternative 2) and development (alternative 3). 
+Indeed, if option 3 had been chosen, it would have been necessary to ensure that the program was compatible with all types of devices and operating systems.</p>
+<p>Also, in order for the product not to be available for everybody, a login is required to enter the website, but no possibility to register. 
+That way, only authorized people from the FSVO can access it, and efficiency won’t be reduced because of the traffic of other people. </p>
+<p>Advantages:</p>
+<ul>
+<li>Respects constraints</li>
+<li>Available from everywhere</li>
+<li>Web development architectures are well-known</li>
+<li>No need to take into account many types of devices or operating systems.</li>
+</ul>
+
+<h3>Decision 2</h3><h2 id="adr-2">ADR #2</h2>
+<ol>
+<li><p>Use a semi-custom scraper implementation</p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>As the web platform Seismo Scraping displays everyday recent articles from various websites, the system should be able to scrape automatically and everyday those websites to get the articles. 
+We need to find a technology to compute that, giving us enough flexibility to scrape many different websites without having to write one specific script for each. 
+Also, as at the time the project had a certain deadline, the solution had to be in place rather quickly.</p>
+<p>This decision affects the whole architecture of the scraping part. It does not affect the rest of the backend and the frontend part though. </p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>Which scraping solution should  be used to get the desired information on each website?</p>
+<ol start="4">
+<li>Alternatives
+Here are the three scraper’s implementations that were considered as an alternative.</li>
+</ol>
+<ul>
+<li>Off-the-shelf implementations: existing commercial software suites and services, offering a ready-to-user scraper. Example: Octoparse</li>
+<li>Semi-custom implementations: code is written by the user, using some existing standardized libraries provided in many programming languages. Example: Beautiful Soup</li>
+<li>Fully custom implementations: developed entirely by the user, including the custom libraries.</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>The semi-custom implementation was chosen. </p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>The semi-custom implementation has been selected as it provides more flexibility than an off-the-shelf implementation. 
+The scraper is then developed especially to fulfill the needs of the project, but without having to write the libraries from scratch. 
+A fully custom implementation could have provided more flexibility but it would not have respected the deadline constraint, and the scope of the project does not require some very specific stuffs unavailable in already existing libraries.</p>
+<p>Advantages of the selected alternative:</p>
+<ul>
+<li>No expenses</li>
+<li>Flexibility</li>
+<li>Quick to implement</li>
+</ul>
+<ol start="7">
+<li>Next Decision:</li>
+</ol>
+<p>Which library/framework should we use?</p>
+
+<h3>Decision 3</h3><h2 id="adr-3">ADR #3</h2>
+<ol>
+<li><p>Use the Beautiful Soup library </p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>In the previous decision record, we chose to develop the scraping part of the project using a library. 
+We now have to choose one library to work with.</p>
+<p>Again, we always have the deadline constraint, so we would like to find a library with a fast learning curve and a good documentation.</p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>With which library should we develop the scraping part?</p>
+<ol start="4">
+<li>Alternatives</li>
+</ol>
+<ul>
+<li>Beautiful Soup: open-source Python library</li>
+<li>Scrapy: complete framework. It provides tools to quickly extract data from websites, analyze it, and dave it in the desired structure and format</li>
+<li>Selenium: web driver which was at first created for automated web testing but is also used for web scraping.</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>Beautiful Soup has been selected</p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>Scrapy and Selenium are both more complex to use, and they both require more resources than Beautiful Soup. 
+Also, Scrapy has a pretty light documentation.</p>
+<p>Advantages of the selected alternative:</p>
+<ul>
+<li>Poorly formed document forgiving</li>
+<li>Encoding detection</li>
+<li>Easy to learn</li>
+</ul>
+<p>Disadvantage:</p>
+<ul>
+<li>Slower speed</li>
+</ul>
+
+<h3>Decision 4</h3><h2 id="adr-4">ADR #4</h2>
+<ol>
+<li><p>Database structured to allow many accounts</p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>The Seismo Scraping tool is intended uniquely for the FSVO office, and especially for the few people that work on the Seismo Info newsletter. 
+So, all users of the platform work towards one specific goal, and all information will eventually be shared between them. 
+The goal is to find the most convenient alternative for the users.</p>
+<p>This decision impacts principally the structure of the database (and also the workflow of the users but it does not take part of the architecture).</p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>Should the system provide a possibility for different users to grade individually the articles? Should it provide a way to collaborate between users or share information?</p>
+<ol start="4">
+<li>Alternatives</li>
+</ol>
+<ul>
+<li>Creation of one unique account for everyone. Everyone sees the same, articles are graded the same way for everyone.</li>
+<li>Creation of an account for each user, in which all grades are dependent on the user. The same article can be rated differently depending on the user</li>
+<li>Creation of an account for each user, and creation of groups of users. Each user inside the same group sees the same. Articles are graded the same way for everyone inside a group.</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>The chosen alternative is the one proposing to create an account for everyone with personalized articles rating for each user (alternative 2). </p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>By discussing with the clients, they made it clear that the most convenient thing for them was to have some individual accounts so that they could all express their opinion on the articles. 
+Moreover, users can select the reference sites from which they want to see the articles, so there is still a possibility to divide the work.
+Also, as only few people work on the articles selection, it would not have made sense to implement a whole user group feature, for at the end only get one single group. </p>
+<p>Advantage:</p>
+<ul>
+<li>Avoids confusion (e.g. the fact that an article&#39;s rating is changed several times because of a disagreement, or that an article that one person might have found interesting was previously trashed by another user.)</li>
+</ul>
+<p>Disadvantage:</p>
+<ul>
+<li>For now, people cannot directly confront their opinion on the platform which would be a great feature</li>
+</ul>
+</p>
+<h1 id="ex---quality-attribute-scenario"><span class='task'>2.</span>  Quality Attribute Scenario</h1>
+<section class="instructions"><ol>
+<li><p>Pick a scenario for a specific quality attribute. Describe it with natural language.</p>
+</li>
+<li><p>Refine the scenario using the following structure:</p>
+</li>
+</ol>
+<img src="./puml_e0.svg"><p><em>Stimulus</em>: condition affecting the system</p>
+<p><em>Source</em>: entity generating the stimulus</p>
+<p><em>Environment</em>: context under which stimulus occurred (e.g., build, test, deployment, startup, normal operation, overload, failure, attack, change)</p>
+<p><em>Response</em>: observable result of the stimulus</p>
+<p><em>Measure</em>: benchmark or target value defining a successful response</p>
+<section class="pass"><span>&starf;&star;&star;: </span>3 scenarios</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;3 scenarios</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;6 scenarios using challenging qualities</section></section><h2 id="example-scenario">Example Scenario</h2>
+<p>Quality: <em>Recoverability</em></p>
+<p>Scenario: In case of power failure, rebooting the system should take up to 20 seconds.</p>
+<img src="./puml_e1.svg"><h2 id="scenario-1">Scenario 1</h2>
+<p>Quality: <em>Learnability</em></p>
+<p>Scenario: 5 minutes should be sufficient for a new user to become familiar with the platform and use it the right way.</p>
+<img src="./puml_e2.svg"><h2 id="scenario-2">Scenario 2</h2>
+<p>Quality: <em>Deployability</em></p>
+<p>Scenario: A simple push in the production branch allows to automatically deploy a new version in less than 3 minutes. </p>
+<img src="./puml_e3.svg"><h2 id="scenario-3">Scenario 3</h2>
+<p>Quality: <em>Scalability</em></p>
+<p>Scenario: Even with bigger amount of data, the response time of the server to fetch more article data will remain constant, between 20 and 50 ms.</p>
+<img src="./puml_e4.svg"><h2 id="scenario-4">Scenario 4</h2>
+<p>Quality: <em>Customizability</em></p>
+<p>Scenario: There would the possibility to specialize the system for a total different client, by changing the entries of the websites to scrape. Only one file containing the websites data would have to change.</p>
+<img src="./puml_e5.svg"><h2 id="scenario-5">Scenario 5</h2>
+<p>Quality: <em>Time to market</em></p>
+<p>Scenario: After an update, a new version, or even after the very first version, it can be given right away to the users, and we can start learning from them after a week of testing. </p>
+<img src="./puml_e6.svg"><h2 id="scenario-6">Scenario 6</h2>
+<p>Quality: <em>Compatibility</em></p>
+<p>Scenario: The interface of the web platform should be sufficiently responsive to be correctly and nicely displayed on different screen sizes (large screens, tablets).</p>
+<img src="./puml_e7.svg"><h2 id="scenario-7">Scenario 7</h2>
+<p>Quality: <em>Availability</em></p>
+<p>Scenario: The system remains available 99.9% of the time. Even in case of a failure on the scraper side (exceptionally, fails to retrieve the desired information), it remains available, and the user does not even notice the failure.</p>
+<img src="./puml_e8.svg"><section class="feedback"><p>1-6: ok</p>
+<p>7: Overlap between Environment and Source/Stimulus.</p>
+</section><h1 id="ex---quality-attribute-tradeoff"><span class='task'>3.</span>  Quality Attribute Tradeoff</h1>
+<section class="instructions"><p>Pick a free combination of two qualities on the <a href="https://usi365.sharepoint.com/:x:/s/MSDE2023-SoftwareArchitecture/EbK1lRTVOUZJhQoz0XdUBwIBd5vd5yQblOaOwYze4ovbuA?e=6aexs6">map</a> and write your name to claim it.</p>
+<p>Then write a short text giving an example for the tradeoff in this assignment.</p>
+<section class="pass"><span>&starf;&star;&star;: </span>1 unique trade-off</section><section class="ok"><span>&starf;&starf;&star;: </span>2 trade-offs</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;2 trade-offs</section></section><h2 id="portability-vs-performance-example">Portability vs. Performance (Example)</h2>
+<p>Developing an app natively for each OS is expensive and time consuming, but it benefits from a good performance. Choosing a cross-platform environment on the other hand simplify the development process, making it faster and cheaper, but it might suffer in performance.</p>
+<h2 id="security-vs-usability">Security vs. Usability</h2>
+<p>Including a multi-authentication system allows to guarantee a better security of data privacy. But on the other hand, this adds extra steps to the authentication process, which can sometimes be annoying. For the Seismo Scraping project, as the data inside each account is not that sensible, usability has been preferred over privacy, and the authentication is a simple login with email and password.</p>
+<section class="feedback"><p>&quot;Security of Data Privacy&quot; (Authentication is often considered part of Security and would conflict with Privacy as it removes user anonymity)</p>
+</section><h2 id="reusability-vs-performance">Reusability vs. Performance</h2>
+<p>A reusable software component offers a great advantage, as it can be reused in other softwares, which can save time and resources in the future. But such a component might not be as performant as another one designed specifically for a single software. </p>
+<h2 id="usability-vs-performance">Usability vs. Performance</h2>
+<p>A software designed for being very usable to all users, might be less performant for more expert users looking for more complexity. A perfect example is the file systems which are very usable for non-expert users, but not as efficient as the command line terminal.</p>
+<h1 id="ex---feature-modeling"><span class='task'>4.</span>  Feature Modeling</h1>
+<section class="instructions"><p>In the context of your chosen project domain, describe your domain using a feature model.</p>
+<p>The feature model should be correctly visualized using the following template:</p>
+<p><img src="./puml_0.svg" alt="Example Feature Model Diagram"></p>
+<p><img src="./fml_6.svg" alt="Example Feature Model Diagram"></p>
+<p>If possible, make use of all modeling constructs.</p>
+<section class="pass"><span>&starf;&star;&star;: </span>Include at least 4 non-trivial features</section><section class="ok"><span>&starf;&starf;&star;: </span>Include at least 6 non-trivial features, which are all implemented by your project</section><section class="exceed"><span>&starf;&starf;&starf;: </span>Include more than 8 non-trivial features, indicate which are found in your project and which belong to one competitor</section></section><p><img src="./puml_1.svg" alt="Feature Model Diagram"></p>
+<p>All features are implemented in the Seismo Scraping project, apart from the session authentication (token based authentication has been chosen over session authentication), the mobile phones screen size, and the rating system on a scale from 1 to 10 (again, a star rating system has been prefered over a numerical one). Also, the personalized color theme is not implemented.</p>
+<h1 id="ex---context-diagram"><span class='task'>5.</span>  Context Diagram</h1>
+<section class="instructions"><p>Prepare a context diagram to define the design boundary for your project.</p>
+<p>Here is a PlantUML/C4 example to get started.</p>
+<p><img src="./puml_2.svg" alt="Example Context Diagram"></p>
+<p>Make sure to include all possible user personas and external dependencies you may need.</p>
+<section class="pass"><span>&starf;&star;&star;: </span>1 User and 1 Dependency</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;1 User and &gt;1 Dependency</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;1 User and &gt;1 Dependency, with both incoming and outgoing dependencies</section></section><p><img src="./puml_3.svg" alt="Context Diagram"></p>
+<h1 id="ex---component-model-top-down"><span class='task'>6.</span>  Component Model: Top-Down</h1>
+<section class="instructions"><p>Within the context of your project domain, represent a model of your modular software architecture decomposed into components.</p>
+<p>The number of components in your logical view should be between 6 and 9:</p>
+<ul>
+<li>At least one component should be further decomposed into sub components</li>
+<li>At least one component should already exist. You should plan how to reuse it, by locating it in some software repository and including in your model the exact link to its specification and its price.</li>
+<li>At least one component should be stateful.</li>
+</ul>
+<p>The logical view should represent provide/require dependencies that are consistent with the interactions represented in the process view.</p>
+<p>The process view should illustrate how the proposed decomposition is used to satisfy the main use case given by your domain model.</p>
+<p>You can add additional process views showing how other use cases can be satisfied by the same set of components.</p>
+<p>This assignment will focus on modularity-related decisions, we will worry about deployment and the container view later.</p>
+<p>Here is a PlantUML example logical view and process view.</p>
+<img src="./puml_e9.svg"><img src="./puml_e10.svg"><section class="hint"><span>Hint: </span>How to connect sub-components to other external components? Use this pattern.</section><img src="./puml_e11.svg"><section class="pass"><span>&starf;&star;&star;: </span>6 components (1 decomposed), 1 use case/process view</section><section class="ok"><span>&starf;&starf;&star;: </span>6 components (1 decomposed), 2 use case/process view</section><section class="exceed"><span>&starf;&starf;&starf;: </span>&gt;6 components (&gt;1 decomposed) and &gt;2 use case/process view</section></section><h2 id="logical-view">Logical View</h2>
+<img src="./puml_e12.svg"><h2 id="process-views">Process Views</h2>
+<img src="./puml_e13.svg"><img src="./puml_e14.svg"><img src="./puml_e15.svg"><img src="./puml_e16.svg"><h1 id="ex---component-model-bottom-up"><span class='task'>7.</span>  Component Model: Bottom-Up</h1>
+<section class="instructions"><p>Within the context of your project domain, represent a model of your modular software architecture decomposed into components.</p>
+<p>To design this model you should attempt to buy and reuse as many components as possible.</p>
+<p>In addition to the logical and process views, you should give a precise list to all sources and prices of the components you have selected to be reused.</p>
+<p>Write an ADR to document your component selection process (indicating which alternatives were considered).</p>
+<section class="pass"><span>&starf;&star;&star;: </span>Existing design with at least 1 reused components (1 Logical View, 1 Process View)</section><section class="ok"><span>&starf;&starf;&star;: </span>Existing design with at least 3 reused components (1 Logical View, 1 Process View, 1 ADR)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>Redesign based on &gt;3 reused components (1 Logical View, &gt;1 Process View, &gt;1 ADR)</section></section><h2 id="logical-view-1">Logical View</h2>
+<img src="./puml_e17.svg"><p>BeautifulSoup4 : <a href="https://pypi.org/project/beautifulsoup4/">https://pypi.org/project/beautifulsoup4/</a>
+Flask-Mail : <a href="https://pypi.org/project/Flask-Mail/">https://pypi.org/project/Flask-Mail/</a>
+Flask-JWT-Extended: <a href="https://pypi.org/project/Flask-JWT-Extended/">https://pypi.org/project/Flask-JWT-Extended/</a>
+MySQL Database: <a href="https://www.mysql.com/downloads/">https://www.mysql.com/downloads/</a></p>
+<h2 id="process-views-1">Process Views</h2>
+<img src="./puml_e18.svg"><img src="./puml_e19.svg"><h2 id="adr">ADR</h2>
+<p><h3>ADR 1</h3><ol>
+<li><p>Use the Beautiful Soup library </p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>As developing a custom scraper from scratch is not part of the project, a scraping library has to be chosen.
+Ideally, we would like to find a library with a fast learning curve and a good documentation.</p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>With which library should we develop the scraping part?</p>
+<ol start="4">
+<li>Alternatives</li>
+</ol>
+<ul>
+<li>Beautiful Soup: open-source Python library</li>
+<li>Scrapy: complete framework. It provides tools to quickly extract data from websites, analyze it, and dave it in the desired structure and format</li>
+<li>Selenium: web driver which was at first created for automated web testing but is also used for web scraping.</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>Beautiful Soup has been selected</p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>Scrapy and Selenium are both more complex to use, and they both require more resources than Beautiful Soup. 
+Also, Scrapy has a pretty light documentation.</p>
+<p>Advantages of the selected alternative:</p>
+<ul>
+<li>Poorly formed document forgiving</li>
+<li>Encoding detection</li>
+<li>Easy to learn</li>
+</ul>
+<p>Disadvantage:</p>
+<ul>
+<li>Slower speed</li>
+</ul>
+
+<h3>ADR 2</h3><ol>
+<li><p>Use Flask-Mail extension to send users mails</p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>To allow the password reset feature, the system needs to be able to send mails to the users. </p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>With solution should we use to send emails as easily as possible?</p>
+<ol start="4">
+<li>Alternatives</li>
+</ol>
+<ul>
+<li>Flask-Mail: extension of Flask to send mails</li>
+<li>smtplib: python module to set up a secure SMTP connection</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>Flask-Mail has been selected</p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>As Flask is the framework used to develop the backend, it is more convenient to directly use the existing extension from Flask.</p>
+<p>Advantages of the selected alternative:</p>
+<ul>
+<li>We do not have to configure the server ourself</li>
+</ul>
+</p>
+<h1 id="ex---interfaceapi-specification"><span class='task'>8.</span>  Interface/API Specification</h1>
+<section class="instructions"><p>In this iteration, we will detail your previous model to specify the provided interface of all components based on their interactions found in your existing process views.</p>
+<ol>
+<li><p>choose whether to use the top down or bottom up model. If you specify the interfaces of the bottom up model, your interface descriptions should match what the components you reuse already offer.</p>
+</li>
+<li><p>decide which interface elements are operations, properties, or events.</p>
+</li>
+</ol>
+<p>Get started with one of these PlantUML templates, or you can come up with your own notation to describe the interfaces, as long as it includes all the necessary details.</p>
+<p>The first template describes separately the provided/required interfaces of each component. </p>
+<p><img src="./puml_4.svg" alt="Separate Required/Provided Interfaces"></p>
+<p>The second template annotates the logical view with the interface descriptions: less redundant, but needs the logical dependencies to be modeled to show which are the required interfaces.</p>
+<p><img src="./puml_5.svg" alt="Shared Interfaces"></p>
+<section class="pass"><span>&starf;&star;&star;: </span>define interfaces of all outer-level components</section><section class="ok"><span>&starf;&starf;&star;: </span>Define interfaces of all outer-level components. Does your architecture publish a Web API? If not, extend it so that it does. </section><section class="exceed"><span>&starf;&starf;&starf;: </span>Also, document the Web API using the OpenAPI language. You can use the <a href="http://api-ace.inf.usi.ch/openapi-to-tree/">OpenAPI-to-Tree</a> tool to visualize the structure of your OpenAPI description.</section></section><img src="./puml_e20.svg"><h3 id="openapi-tree">OpenAPI Tree</h3>
+<img src="open_api_tree2.png" width="600">
+
+<h1 id="ex---connector-view"><span class='task'>9.</span>  Connector View</h1>
+<section class="instructions"><p>Extend your existing models introducing the connector view</p>
+<p>For every pair of connected components (logical view), pick the most suitable connector. Existing components can play the role of connector, or new connectors may need to be introduced.</p>
+<p><img src="./c5_7.svg" alt="Example Connector View Diagram"></p>
+<p>Make sure that the interactions shown in the process views reflect the primitives of the selected connector</p>
+<section class="pass"><span>&starf;&star;&star;: </span>model existing connectors based on previous model decisions</section><section class="ok"><span>&starf;&starf;&star;: </span>model existing connectors based on previous model decisions, write an ADR about the choice of one connector</section><section class="exceed"><span>&starf;&starf;&starf;: </span>introduce a new type of connector and update your existing process view 
+(sequence diagram) to show the connector primitives in action</section></section><h2 id="connector-view">Connector View</h2>
+<p><img src="./c5_8.svg" alt="Connector View Diagram"></p>
+<p>The executor is a new kind of connector which runs the scraper everyday at a specific hour.</p>
+<h2 id="process-view">Process View</h2>
+<img src="./puml_e21.svg"><h2 id="adr-1">ADR</h2>
+<p><h3>Connector Decision</h3><ol>
+<li><p>Use a shared database</p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>We need a way to store the data the scraper gets from the web, and alo the data coming from the user interface (user data, grades user assigned to articls, ...).</p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>Should data coming from the scraper and data coming from the user interface be linked and how?</p>
+<ol start="4">
+<li>Alternatives</li>
+</ol>
+<ul>
+<li>Shared Database</li>
+<li>Two different databases - one for the articles data and one for the users data</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>The shared database alternative has been chosen.</p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>As articles fetched by the scraper need to be displayed on the user interface and that users will directly interact with them, it makes sense to have all the data in one unique shared database.</p>
+<p>Advantages:</p>
+<ul>
+<li>All data in one unique location</li>
+<li>No duplication of data</li>
+</ul>
+</p>
+<h1 id="ex---adapters-and-coupling"><span class='task'>10.</span>  Adapters and Coupling</h1>
+<section class="instructions"><ol>
+<li>Highlight the connectors (or components) in your existing bottom-up design playing the role of adapter. (We suggest to use the bottom-up design since when dealing with externally sourced components, their interfaces can be a source of mismatches).</li>
+<li>Which kind of mismatch** are they solving?</li>
+<li>Introduce a wrapper in your architecture to hide one of the previously highlighted adapters</li>
+<li>Where would standard interfaces play a role in your architecture? Which standards could be relevant in your domain?</li>
+<li>Explain how one or more pairs of components are coupled according to different coupling facets</li>
+<li>Provide more details on how each adapter solves the mismatches identified using pseudo-code or the actual code</li>
+<li>How can you improve your architectural model to minimize coupling between components? (Include a revised logical/connector view with your solution)</li>
+</ol>
+<section class="pass"><span>&starf;&star;&star;: </span>1-5 (with one adapter)</section><section class="ok"><span>&starf;&starf;&star;: </span>1-6 (with at least two adapters)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1-7 (with at least two adapters)</section><p>** If you do not find any mismatch in your existing design we suggest to introduce one artificially.</p>
+<h2 id="hints">Hints</h2>
+<ul>
+<li><p>(1) Should we find cases where two components cannot communicate (and are doing it wrongly) and highlight they would need an adapter?, or cases where we have already a &quot;component playing the role of adapter in the view&quot; and highlight only the adapter?</p>
+<p><em>Both are fine. We assumed that if you draw a dependency (or a connector) the interfaces match, but if you detect that the components that should communicate cannot communicate then of course introduce an adapter to solve the mismatch</em></p>
+</li>
+<li><p>(2) Please show the details about the two interfaces which do not match (e.g., names of parameters, object structures) so that it becomes clear why an adapter is needed and what the adapter should do to bridge the mismatch</p>
+</li>
+<li><p>(5-6) These questions are about the implications on coupling based on the decisions you documented in the connector view.
+Whenever you have a connector you couple together the components and different connectors will have different forms of coupling</p>
+<p>For example, if you use calls everywhere, do you really need them everywhere? is there some pair of components where you could use a message queue instead?</p>
+<p>Regarding the coupling facets mentioned in question 5. You do not have to answer all questions related to &quot;discovery&quot;, &quot;session&quot;, &quot;binding&quot;, &quot;interaction&quot;, &quot;timing&quot;, &quot;interface&quot; and &quot;platform&quot; (p.441, Coupling Facets). Just the ones that you think are relevant for your design and by answering them you can get ideas on how to do question 6.</p>
+</li>
+</ul>
+</section><h3 id="1">1.</h3>
+<img src="./puml_e22.svg"><h3 id="2">2.</h3>
+<p>We need an adapter between the Scraper and the Shared Database, to format the date scraped from the web, to the right format in order to be stored in the shared database. Indeed the SQL DATE has the format YYYY-MM-DD, but not every date taken from the web has this format, that&#39;s why an adapter is needed between the two.</p>
+<p>Another needed adapter is between Flask Mail and the Password Reset Component. Indeed, the Password Reset Component needs to send a mail asynchronously, because we do not want to wait until the message is sent, but the send() method of Flask Mail is synchronous. So we need an Async2Sync adapter.</p>
+<h3 id="3">3.</h3>
+<img src="./puml_e23.svg"><h3 id="4">4.</h3>
+<p>A standard interface could be useful in my domain to take a date in whatever format and transform it in the DATE SQL format, so that the storage of the data in the database could be done in an easier and cleaner way. However, I did not find any standard doing it online. </p>
+<h3 id="5">5.</h3>
+<p>Coupling facets between User Interface Component and Display Component</p>
+<ul>
+<li>Discovery: location of the component is written in a configuration file</li>
+<li>Interaction: the client must directly connect to the component</li>
+<li>Timing: the client and the component must be available at the smae time -&gt; connector is synchronous</li>
+<li>Session: the UI and Display components do not share any session state. Each request/message is independent</li>
+</ul>
+<h3 id="6">6.</h3>
+<p>Date Adapter:</p>
+<pre><code class="language-python">def formatDate(self, nonFormattedDate):
+        # Formatted date should be &quot;AAAA-MM-DD&quot;
+        try:
+            dateRegex1 = re.compile(self.site.dateRegex1)
+            if dateRegex1.search(nonFormattedDate) is not None:
+                date = dateRegex1.search(nonFormattedDate)
+                year = date.group()[self.site.year1a:self.site.year1b]
+                if self.site.months:
+                    month = months(date.group()[self.site.month1a:self.site.month1b])
+                else:
+                    month = date.group()[self.site.month1a:self.site.month1b]
+                day = date.group()[self.site.day1a:self.site.day1b]
+
+
+            elif self.site.dateRegex2 is not None:
+                dateRegex2 = re.compile(self.site.dateRegex2)
+                date = dateRegex2.search(nonFormattedDate)
+                year = date.group()[self.site.year2a:self.site.year2b]
+                if self.site.months:
+                    month = months(date.group()[self.site.month2a:self.site.month2b])
+                else:
+                    month = date.group()[self.site.month2a:self.site.month2b]
+                day = &quot;0&quot;+date.group()[self.site.day2a:self.site.day2b]
+
+            formattedDate = year+&#39;-&#39;+month+&#39;-&#39;+day
+
+        except:
+            return None
+            pass
+        #print(formattedDate)
+        return formattedDate
+</code></pre>
+<p>Async2Sync Adapter:</p>
+<pre><code class="language-python">def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+def send_email(subject, sender, recipients, text_body, html_body):
+    msg = Message(subject, sender=sender, recipients=recipients)
+    msg.body = text_body
+    msg.html = html_body
+    Thread(target=send_async_email, args=(app, msg)).start()
+
+@app.route(&#39;/forget&#39;, methods = [&#39;POST&#39;])
+def forgot_password():
+    host_url = app.config[&#39;HOST_URL&#39;]
+
+    email = request.json[&#39;email&#39;]
+    url = host_url + &#39;/reset-password&#39;
+
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        return jsonify({&quot;msg&quot;: &quot;email does not exist in db&quot;})
+    expires = timedelta(hours=24)
+    reset_token = create_access_token(str(user.id), expires_delta=expires)
+
+    send_email(&#39;Reset Your Password&#39;,
+                sender=app.config[&#39;MAIL_USERNAME&#39;],
+                recipients=[user.email],
+                text_body=render_template(&#39;email/reset-password.txt&#39;,
+                                          url= url + &#39;?token=&#39; + reset_token),
+                html_body=render_template(&#39;email/reset-password.html&#39;,
+                                            url=url + &#39;?token=&#39; + reset_token))
+    return jsonify({&quot;msg&quot;: &quot;password has been reset successfully&quot;})
+</code></pre>
+<h3 id="7">7.</h3>
+<p>I did not find any coupling that could be minimized without altering the system in the existing logical view</p>
+<h1 id="ex---physical-and-deployment-views"><span class='task'>11.</span>  Physical and Deployment Views</h1>
+<section class="instructions"><p>a. Extend your architectural model with the following viewpoints:</p>
+<ol>
+<li><p>Physical or Container View</p>
+</li>
+<li><p>Deployment View</p>
+</li>
+</ol>
+<p>Your model should be non-trivial: include more than one physical device/virtual container (or both). Be ready to discuss which connectors are found at the device/container boundaries.</p>
+<p>b. Write an ADR about which deployment strategy you plan to adopt. The alternatives to be considered are: big bang, blue/green, shadow, pilot, gradual phase-in, canary, A/B testing.</p>
+<p>c. (Optional) Prepare a demo of a basic continuous integration and delivery pipeline for your architectural documentation so that you can obtain a single, integrated PDF with all the viewpoints you have modeled so far. </p>
+<p>For example:</p>
+<ul>
+<li>configure a GitHub webhook to be called whenever you push changes to your documentation</li>
+<li>setup a GitHub action (or similar) to build and publish your documentation on a website</li>
+</ul>
+<section class="pass"><span>&starf;&star;&star;: </span>1 physical view, 1 deployment view, 1 ADR (b.)</section><section class="ok"><span>&starf;&starf;&star;: </span>&gt;1 physical view, &gt;1 deployment view, 1 ADR (b.)</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1 physical view, 1 deployment view, 1 ADR (b.) + 1 demo (c.)</section></section><h1 id="ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</h1>
+<section class="instructions "><p>The goal of this week is to plan how to deliver your software as a service with high availability.</p>
+<ol>
+<li>If necessary, change your deployment design so that your software is hosted on a server (which could be running as a Cloud VM). Your SaaS architecture should show how your SaaS can be remotely accessed from a client such as a Web browser, or a mobile app</li>
+<li>Sketch your software as a service pricing model (optional)</li>
+<li>How would you define the availability requirements in your project domain? For example, what would be your expectation for the duration of planned/unplanned downtimes or the longest response time tolerated by your clients?</li>
+<li>Which strategy do you adopt to monitor your service&#39;s availability? Extend your architecture with a watchdog or a heartbeat monitor and motivate your choice with an ADR.</li>
+<li>What happens when a stateless component goes down? model a sequence diagram to show what needs to happen to recover one of your critical stateless components</li>
+<li>How do you plan to recover stateful components? write an ADR about your choice of replication strategy and whether you prefer consistency vs. availability. Also, consider whether event sourcing would help in your context.</li>
+<li>How do you plan to avoid cascading failures? Be ready to discuss how the connectors (modeled in your connector view) impact the reliability of your architecture.</li>
+<li>How did you mitigate the impact of your external dependencies being not available? (if applicable)</li>
+</ol>
+<section class="pass"><span>&starf;&star;&star;: </span>1, 3, 4, one of:  5, 6, 7, 8</section><section class="ok"><span>&starf;&starf;&star;: </span>1, 2, 3, 4, two of:  5, 6, 7, 8</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1, 2, 3, 4, 5, 6, 7, 8</section></section><h1 id="ex---flexibility"><span class='task'>13.</span>  Flexibility</h1>
+<section class="instructions "><p>Only dead software stops changing. You just received a message from your customer, they have an idea. Is your architecture ready for it?</p>
+<ol>
+<li><p>Pick a new use case scenario. Precisely, what exactly do you need to change of your existing architecture so that it can be supported? Model the updated logical/process/deployment views.</p>
+</li>
+<li><p>Pick another use case scenario so that it can be supported without any major architectural change (i.e., while you cannot add new components, it is possible to extend the interface of existing ones or introduce new dependencies). Illustrate with a process view, how your previous design can satisfy the new requirement.</p>
+</li>
+<li><p>Change impact. One of your externally sourced component/Web service API has announced it will introduce a breaking change. What is the impact of such change? How can you control and limit the impact of such change? Update your logical view</p>
+</li>
+<li><p>Open up your architecture so that it can be extended with plugins by its end-users. Where would be a good extension point? Update your logical view and give at least one example of what a plugin would actually do.</p>
+</li>
+<li><p>Assuming you have a centralized deployment with all stateful components storing their state in the same database, propose a strategy to split the monolith into at least two different microservices. Model the new logical/deployment view as well as the interfaces of each microservice you introduce.</p>
+</li>
+</ol>
+<section class="pass"><span>&starf;&star;&star;: </span>1, one out of 2-5.</section><section class="ok"><span>&starf;&starf;&star;: </span>1, two out of 2-5.</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1-5.</section></section>
+    </main>
+
+
+<footer>
+    5/4/2023, 12:47:51 PM
+</footer>
+
+</body>
+
+</html>
