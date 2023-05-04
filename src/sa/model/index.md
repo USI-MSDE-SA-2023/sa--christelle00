@@ -1447,6 +1447,77 @@ Exceed: 1 physical view, 1 deployment view, 1 ADR (b.) + 1 demo (c.)
 
 }
 
+### Container View
+
+```puml
+@startuml
+!include <C4/C4_Container>
+
+Person(user, "User")
+
+System(system, "Seismo Scraping System") {
+  ContainerDb(db, "Database", "MySQL")
+  Container(front, "Frontend", "Vue.js")
+  Container(back, "Backend", "Flask Python")
+}
+
+Rel(user, front, "Interact with")
+Rel(back, db, "Reads/Writes")
+Rel(front, back, "HTTP Requests")
+
+
+@enduml
+```
+
+
+### Deployment View
+
+```puml
+@startuml
+
+node "Frontend" {
+[User Interface] as UI
+}
+node "Backend" {
+  [Global API] as API
+  [Display API] as DAPI
+  [Actions API] as AAPI
+  component "Account Management" as AM {
+    [Authentication] as A
+    [Password Reset] as PR
+    [Password Change] as PC 
+  }
+  component "Scraper" as S {
+    [Scraper] as SC
+    [Json Source Websites Repository] as JSON
+  }
+}
+database "Database" {
+[Database] as DB
+}
+
+API -- DAPI
+API -- AAPI
+API -- A
+API -- PR
+API -- PC
+PR -- PC
+UI -- API:HTTPS
+JSON -- SC
+DAPI -- DB
+AAPI -- DB
+A -- DB
+PR -- DB
+PC -- DB
+SC -- DB
+
+@enduml
+```
+
+
+### ADR
+![Deployment Decision](./decisions/deployment-strategy-decision.madr)
+
 # Ex - Availability and Services
 
 {.instructions 

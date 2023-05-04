@@ -1,0 +1,32 @@
+1. The Blue/green deployment strategy has been adopted
+
+2. Context
+
+A deployment strategy has to be chosen in order to deploy the system in a safe way. Also, as the project is at 
+the beginning a prototype, all the requested source websites were at the beginning not present. So, as the user need them, all users would like to see the updates as soon as possible.
+
+3. Problem
+
+Which deployment strategy should be used to deploy the system?
+
+4.  Alternatives
+
+* Big Bang
+* Blue/green
+* Shadow
+* Pilot
+* Gradual phase-in
+* Canary
+* A/B testing
+
+
+5. Choice
+
+The Blue/green alternative has been chosen
+
+6. Reason
+
+As very few users are using the system, it does not make any sens to use alternatives as Pilot, A/B Testing, Canary or gradual phase-in.
+The prefered alternative is thus for all the users to directly see all the new changes.
+Also, as we have the constraint that the users would like to get the updates as soon as possible (for now) the shadow alternative is not chosen.
+Then, the blue/green alternative is preferred over the big bang one, so that we could switch to the previous version in case of problems.
