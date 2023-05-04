@@ -1518,6 +1518,9 @@ SC -- DB
 ### ADR
 ![Deployment Decision](./decisions/deployment-strategy-decision.madr)
 
+
+### Demo
+
 # Ex - Availability and Services
 
 {.instructions 
