@@ -1,0 +1,25 @@
+1. A synchronous replication strategy has been chosen
+
+2. Context
+
+To prevent the loss of the data of stateful components, those components can be replicated.
+That way, even if something goes wrong, important data is not lost.
+
+3. Problem
+
+Which strategy to adopt to replicate stateful components ?
+
+4. Alternatives
+
+* Synchronous Replication
+* Asynchronous Replication
+
+5. Choice
+
+The synchronous replication alternative has been chosen
+
+6. Reason
+
+In some situations availability will be preferred over consistency (as discussed after),
+but when possible the system should be as consistent as possible. The disadvantage of synchronous replication 
+is that the write operations take longer than with asynchronous replication, but at least all replicas are consistent, all the stored articles are also stored in the others replicas. 

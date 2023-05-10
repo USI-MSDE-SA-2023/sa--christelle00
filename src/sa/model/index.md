@@ -1544,6 +1544,113 @@ Exceed: 1, 2, 3, 4, 5, 6, 7, 8
 
 }
 
+### 1. 
+In my case the software is alreay hosted on a server. The clients can access it from a web browser.
+
+### 2. Service Pricing Model
+The service would have a subscription-based pricing, with two different pricings depending on the number of source websites. The normal version goes until 10 source websites. Starting at more than 10 source websites, the user would have to pay the premium version.
+
+* Normal version : 20 CHF/month -> up to 10 source websites
+* Premium version : 80 CHF/month -> unlimited number of source websites
+
+
+### 3. Availability Requirements
+ * The system must be available each day of the week, and especially in the morning at this is the time where the FSVO people will use it
+ * Also, it should be available/running each day around midnight, as this is the time, in which the scraper script is run. So if the system is down at this time, the users won't see the new articles the day after. 
+ * If the system should have downtimes, those downtimes should be predicted in advance, so that the users could know it in advance.
+ * The response time should short. As a lot of new articles are displayed every day, if it takes each time 2 second to treat each article, it will take too much time to treat all articles, and the user experience won't be nice.
+
+ ### 4. Monitor the Service's Availability
+ ![Monitor Decision ADR](./decisions/monitor-decision.madr)
+
+ ```puml
+@startuml
+
+node "Watchdog" {
+  [Watchdog] as W
+}
+
+node "Frontend" {
+[User Interface] as UI
+}
+node "Backend" {
+  [Global API] as API
+  [Display API] as DAPI
+  [Actions API] as AAPI
+  component "Account Management" as AM {
+    [Authentication] as A
+    [Password Reset] as PR
+    [Password Change] as PC 
+  }
+  component "Scraper" as S {
+    [Scraper] as SC
+    [Json Source Websites Repository] as JSON
+  }
+}
+database "Database" {
+[Database] as DB
+}
+
+API -- DAPI
+API -- AAPI
+API -- A
+API -- PR
+API -- PC
+PR -- PC
+UI -- API:HTTPS
+JSON -- SC
+DAPI -- DB
+AAPI -- DB
+A -- DB
+PR -- DB
+PC -- DB
+SC -- DB
+W -- API:HTTPS
+
+@enduml
+```
+
+### 5. Stateless component goes down
+We consider here the case in which the Display API is not available. A circuit breaker can be used to immediately detect that it is not available. Then, a previous version is fetched from the cache.
+
+```puml
+@startuml
+title Recover Display API
+
+participant "User Interface" as UI
+participant "Circuit Breaker" as CB
+participant "Display API" as DAPI
+participant "Cache" as C
+
+UI -> CB: call()
+CB -> DAPI: detects failure
+CB -> UI: failure detected
+UI -> C: fetches cache
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+### 6. Stateful components recovering
+ ![Recovery Decision ADR](./decisions/recovery-decision.madr)
+
+In general (not in the context of the replication decision), even if consistency is important in my domain (because if the users never see new articles, the system is practically useless), availability is preferred over consistency. Indeed, if for example one external source website is down and that the data cannot be scraped from it, the other data are still displayed. The system will be available but not completely consistent as some data are missing. 
+
+
+Event Sourcing could effectively be useful to reproduce the way articles were graded by each users. However, it would not be useful to populate the database with the new articles.
+
+### 7. Avoiding cascading failures
+As most of my connectors are synchronous, if a component goes down, a large part of the architecture is affected. For example, if the db goes down, the whole system is affected. I thus need to add redundancy in my architecture (typically the database, which is the most important component) to prevent this from happening.
+
+### 8. Mitigating the impact of non available external dependencies
+In case the database is not available, redundancy is used so that it does not impact the whole system.
+
+In case one of the source website is down, the scraper just accepts the fact that the website is not reacheable and continue with the scraping of the other websites without impacting the whole system. -> In this case typically, availability is preferred over consistency.
+
+In case BeautifulSoup is not available, once again, the scraper accepts the fact that it is not able to scrape anything from the web, and thus does not scrape anything. But the rest of the system is not impacted. Again the system is available but not consistent.
+
 # Ex - Flexibility
 
 {.instructions 

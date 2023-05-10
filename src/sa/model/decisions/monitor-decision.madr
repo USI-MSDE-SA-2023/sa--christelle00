@@ -1,0 +1,25 @@
+1. A watchdog monitor has been chosen
+
+2. Context
+
+As the clients need to use the service everyday, we need to ensure its availability.
+To keep track of the availability we can use an automated system that continuously check whether the service is available or not.
+
+3. Problem
+
+Which strategy to adopt to monitor the service's availability ?
+
+4. Alternatives
+
+* Watchdog
+* Heartbeat
+
+5. Choice
+
+The Watchdog alternative has been chosen
+
+6. Reason
+
+The watchdog alternative has been chosen because it behaves the same way as the clients, and make the same calls as them.
+Also, using the watchdog allows us to get the response time of the service which is an important information.
+For example, at the very beginning of the service, it did not have a pagination system, so at a certain point, the request to get all the articles took too much time. This is the kind of situation that can easily be spotted right away using a watchdog.
