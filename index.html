@@ -278,6 +278,14 @@ footer {
 <a class="d3" href="#adr">ADR</a>
 <a class="d3" href="#demo">Demo</a>
 <a class="d1" href="#ex---availability-and-services"><span class='task'>12.</span>  Availability and Services</a>
+<a class="d3" href="#1">1.</a>
+<a class="d3" href="#2-service-pricing-model">2. Service Pricing Model</a>
+<a class="d3" href="#3-availability-requirements">3. Availability Requirements</a>
+<a class="d3" href="#4-monitor-the-services-availability">4. Monitor the Service's Availability</a>
+<a class="d3" href="#5-stateless-component-goes-down">5. Stateless component goes down</a>
+<a class="d3" href="#6-stateful-components-recovering">6. Stateful components recovering</a>
+<a class="d3" href="#7-avoiding-cascading-failures">7. Avoiding cascading failures</a>
+<a class="d3" href="#8-mitigating-the-impact-of-non-available-external-dependencies">8. Mitigating the impact of non available external dependencies</a>
 <a class="d1" href="#ex---flexibility"><span class='task'>13.</span>  Flexibility</a>
 
         </nav>
@@ -928,7 +936,94 @@ Then, the blue/green alternative is preferred over the big bang one, so that we 
 <li>How do you plan to avoid cascading failures? Be ready to discuss how the connectors (modeled in your connector view) impact the reliability of your architecture.</li>
 <li>How did you mitigate the impact of your external dependencies being not available? (if applicable)</li>
 </ol>
-<section class="pass"><span>&starf;&star;&star;: </span>1, 3, 4, one of:  5, 6, 7, 8</section><section class="ok"><span>&starf;&starf;&star;: </span>1, 2, 3, 4, two of:  5, 6, 7, 8</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1, 2, 3, 4, 5, 6, 7, 8</section></section><h1 id="ex---flexibility"><span class='task'>13.</span>  Flexibility</h1>
+<section class="pass"><span>&starf;&star;&star;: </span>1, 3, 4, one of:  5, 6, 7, 8</section><section class="ok"><span>&starf;&starf;&star;: </span>1, 2, 3, 4, two of:  5, 6, 7, 8</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1, 2, 3, 4, 5, 6, 7, 8</section></section><h3 id="1-1">1.</h3>
+<p>In my case the software is alreay hosted on a server. The clients can access it from a web browser.</p>
+<h3 id="2-service-pricing-model">2. Service Pricing Model</h3>
+<p>The service would have a subscription-based pricing, with two different pricings depending on the number of source websites. The normal version goes until 10 source websites. Starting at more than 10 source websites, the user would have to pay the premium version.</p>
+<ul>
+<li>Normal version : 20 CHF/month -&gt; up to 10 source websites</li>
+<li>Premium version : 80 CHF/month -&gt; unlimited number of source websites</li>
+</ul>
+<h3 id="3-availability-requirements">3. Availability Requirements</h3>
+<ul>
+<li>The system must be available each day of the week, and especially in the morning at this is the time where the FSVO people will use it</li>
+<li>Also, it should be available/running each day around midnight, as this is the time, in which the scraper script is run. So if the system is down at this time, the users won&#39;t see the new articles the day after. </li>
+<li>If the system should have downtimes, those downtimes should be predicted in advance, so that the users could know it in advance.</li>
+<li>The response time should short. As a lot of new articles are displayed every day, if it takes each time 2 second to treat each article, it will take too much time to treat all articles, and the user experience won&#39;t be nice.</li>
+</ul>
+<h3 id="4-monitor-the-services-availability">4. Monitor the Service&#39;s Availability</h3>
+<p> <h3>Monitor Decision ADR</h3><ol>
+<li><p>A watchdog monitor has been chosen</p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>As the clients need to use the service everyday, we need to ensure its availability.
+To keep track of the availability we can use an automated system that continuously check whether the service is available or not.</p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>Which strategy to adopt to monitor the service&#39;s availability ?</p>
+<ol start="4">
+<li>Alternatives</li>
+</ol>
+<ul>
+<li>Watchdog</li>
+<li>Heartbeat</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>The Watchdog alternative has been chosen</p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>The watchdog alternative has been chosen because it behaves the same way as the clients, and make the same calls as them.
+Also, using the watchdog allows us to get the response time of the service which is an important information.
+For example, at the very beginning of the service, it did not have a pagination system, so at a certain point, the request to get all the articles took too much time. This is the kind of situation that can easily be spotted right away using a watchdog.</p>
+</p>
+<img src="./puml_e26.svg"><h3 id="5-stateless-component-goes-down">5. Stateless component goes down</h3>
+<p>We consider here the case in which the Display API is not available. A circuit breaker can be used to immediately detect that it is not available. Then, a previous version is fetched from the cache.</p>
+<img src="./puml_e27.svg"><h3 id="6-stateful-components-recovering">6. Stateful components recovering</h3>
+<p> <h3>Recovery Decision ADR</h3><ol>
+<li><p>A synchronous replication strategy has been chosen</p>
+</li>
+<li><p>Context</p>
+</li>
+</ol>
+<p>To prevent the loss of the data of stateful components, those components can be replicated.
+That way, even if something goes wrong, important data is not lost.</p>
+<ol start="3">
+<li>Problem</li>
+</ol>
+<p>Which strategy to adopt to replicate stateful components ?</p>
+<ol start="4">
+<li>Alternatives</li>
+</ol>
+<ul>
+<li>Synchronous Replication</li>
+<li>Asynchronous Replication</li>
+</ul>
+<ol start="5">
+<li>Choice</li>
+</ol>
+<p>The synchronous replication alternative has been chosen</p>
+<ol start="6">
+<li>Reason</li>
+</ol>
+<p>In some situations availability will be preferred over consistency (as discussed after),
+but when possible the system should be as consistent as possible. The disadvantage of synchronous replication 
+is that the write operations take longer than with asynchronous replication, but at least all replicas are consistent, all the stored articles are also stored in the others replicas. </p>
+</p>
+<p>In general (not in the context of the replication decision), even if consistency is important in my domain (because if the users never see new articles, the system is practically useless), availability is preferred over consistency. Indeed, if for example one external source website is down and that the data cannot be scraped from it, the other data are still displayed. The system will be available but not completely consistent as some data are missing. </p>
+<p>Event Sourcing could effectively be useful to reproduce the way articles were graded by each users. However, it would not be useful to populate the database with the new articles.</p>
+<h3 id="7-avoiding-cascading-failures">7. Avoiding cascading failures</h3>
+<p>As most of my connectors are synchronous, if a component goes down, a large part of the architecture is affected. For example, if the db goes down, the whole system is affected. I thus need to add redundancy in my architecture (typically the database, which is the most important component) to prevent this from happening.</p>
+<h3 id="8-mitigating-the-impact-of-non-available-external-dependencies">8. Mitigating the impact of non available external dependencies</h3>
+<p>In case the database is not available, redundancy is used so that it does not impact the whole system.</p>
+<p>In case one of the source website is down, the scraper just accepts the fact that the website is not reacheable and continue with the scraping of the other websites without impacting the whole system. -&gt; In this case typically, availability is preferred over consistency.</p>
+<p>In case BeautifulSoup is not available, once again, the scraper accepts the fact that it is not able to scrape anything from the web, and thus does not scrape anything. But the rest of the system is not impacted. Again the system is available but not consistent.</p>
+<h1 id="ex---flexibility"><span class='task'>13.</span>  Flexibility</h1>
 <section class="instructions "><p>Only dead software stops changing. You just received a message from your customer, they have an idea. Is your architecture ready for it?</p>
 <ol>
 <li><p>Pick a new use case scenario. Precisely, what exactly do you need to change of your existing architecture so that it can be supported? Model the updated logical/process/deployment views.</p>
@@ -947,7 +1042,7 @@ Then, the blue/green alternative is preferred over the big bang one, so that we 
 
 
 <footer>
-    5/4/2023, 1:25:43 PM
+    5/10/2023, 12:24:53 PM
 </footer>
 
 </body>
