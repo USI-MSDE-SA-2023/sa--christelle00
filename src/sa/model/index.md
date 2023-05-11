@@ -1618,14 +1618,19 @@ We consider here the case in which the Display API is not available. A circuit b
 title Recover Display API
 
 participant "User Interface" as UI
+participant "Global API" as API
 participant "Circuit Breaker" as CB
 participant "Display API" as DAPI
 participant "Cache" as C
 
-UI -> CB: call()
+UI -> API: call()
+API -> CB: call()
 CB -> DAPI: detects failure
-CB -> UI: failure detected
-UI -> C: fetches cache
+DAPI -> CB: failure detected
+CB -> C: fetches cache
+C -> CB: response from cache
+CB -> API: response from cache
+API -> UI: response from cache
 
 skinparam monochrome true
 skinparam shadowing false
