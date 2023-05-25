@@ -1679,3 +1679,456 @@ Good: 1, two out of 2-5.
 Exceed: 1-5.
 
 }
+
+### 1. New use case scenario
+
+The new use case scenario is more destinated to the developers of the systems than to the clients. It is about introducing a system of regognition and management of errors in the scraping procedure. Indeed, it can be that some articles that should have been present in the system actually are not, due to an error during the scraping (scraper not able to scrape an article, error 429, ...). So, basically, the system would store in the database all the different kinds of errors happening, for which articles/websites, and would allow to see those errors on the user interface too. 
+
+
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title Seismo Scraping Logical View
+
+interface " " as BSP
+interface " " as FJWT
+interface " " as UAS
+interface " " as SDB
+interface " " as UIP
+interface " " as UIC
+interface " " as DBI
+interface " " as UID
+interface " " as UIA
+interface " " as FMI
+interface " " as IA2S
+
+
+
+[BeautifulSoup] as BS #lightgray
+[Database <$database{scale=0.33}>] as DB #lightgray
+[User Interface] as RealUI
+[Global API] as UI
+RealUI -(0-UI
+[Flask JWT Extended] as JWT #lightgray
+[Display API] as D
+[Actions API] as AA
+[Flask Mail] as FM #lightgray
+
+[Async2Sync Adapter] as A2S 
+
+
+
+component Scraper as SM {
+   component Wrapper as W {
+    component Scraper as M
+    component Adapter as DA
+    M -(0 DA
+   }
+   component "Error Manager" as EM #gray
+   component "Json Source Websites Repository" as Json
+   M -(0- Json
+   EM -(0 M
+}
+
+component "Account Management" as PM {
+  component "Authentication" as AS
+  component "Password Change" as PC
+  component "Password Reset" as PR
+  PR -(0- PC
+}
+
+
+EM --( SDB
+FMI -- FM
+UID -- D
+UIA -- AA
+BS - BSP
+DB -up- DBI
+UAS -- AS
+SDB --- DB
+M -up-( BSP
+DA --( SDB
+JWT -- FJWT
+AS -up-( FJWT
+UI --( UAS
+AS --( DBI
+UIP -- PR
+UIC -- PC
+PR --( DBI
+PC --( DBI
+UI --( UIP
+UI --( UIC
+D --( DBI
+AA --( DBI
+UI --( UID
+UI --( UIA
+PR --( IA2S
+IA2S -- A2S
+A2S --( FMI
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+
+```puml
+@startuml
+title Scrape Articles
+
+participant "Executor" as E
+participant "Scraper" as M
+participant "Json Source Websites Repository" as JSWR
+participant "Error Manager" as EM #gray
+participant "Beautiful Soup" as SL
+participant "Database" as DB
+
+E -> M: run()
+M -> JSWR: read()
+M -> SL: getPage()
+M -> EM: report_error()
+EM -> DB: store_error()
+M -> SL: find()
+M -> EM: report_error()
+EM -> DB: store_error()
+M -> DB: INSERT
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+```puml
+@startuml
+title Deployment View
+node "Frontend" {
+[User Interface] as UI
+}
+node "Backend" {
+  [Global API] as API
+  [Display API] as DAPI
+  [Actions API] as AAPI
+  component "Account Management" as AM {
+    [Authentication] as A
+    [Password Reset] as PR
+    [Password Change] as PC 
+  }
+  component "Scraper" as S {
+    [Scraper] as SC
+    [Json Source Websites Repository] as JSON
+    [Error Manager] as EM
+  }
+}
+database "Database" {
+[Database] as DB
+}
+
+API -- DAPI
+API -- AAPI
+API -- A
+API -- PR
+API -- PC
+PR -- PC
+UI -- API:HTTPS
+JSON -- SC
+DAPI -- DB
+AAPI -- DB
+A -- DB
+PR -- DB
+PC -- DB
+SC -- DB
+SC -- EM
+EM -- DB
+
+@enduml
+```
+
+### 2. Supported use case scenario
+The new use case is to add a new source website directly from the user interface, so that the system would not have to be redeployed, each time a new webiste is added. So, basically, the Json Source Website Repository file is made editable from the user interface. 
+
+```puml
+@startuml
+title Source Websites from frontend
+
+participant "User Interface" as UI
+participant "Global API" as GAPI
+participant "Actions API" as AAPI
+participant "Json Source Website Repository" as JSON
+
+UI -> GAPI:
+GAPI -> AAPI: 
+AAPI -> JSON: edit file
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+### 3. Breaking Change of an external component
+
+The most important external component of the system is BeautifulSoup. In case of a breaking change the system has to adapt, else new articles cannot be scraped anymore. One solution would be to directly change the script to adapt the changes of the library. Alternatively, an adapter could be introduced between the scraper and BeautifulSoup so that the scraper itself do not have to change. Only the adapter changes, and we would not have to do the same changes multiple times. 
+
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title Seismo Scraping Logical with Adapters and Wrapper
+
+interface " " as BSP
+interface " " as FJWT
+interface " " as UAS
+interface " " as SDB
+interface " " as UIP
+interface " " as UIC
+interface " " as DBI
+interface " " as UID
+interface " " as UIA
+interface " " as FMI
+interface " " as IA2S
+interface " " as BSPA
+
+
+
+[BeautifulSoup] as BS #lightgray
+[Database <$database{scale=0.33}>] as DB #lightgray
+[User Interface] as RealUI
+[Global API] as UI
+RealUI -(0-UI
+[Flask JWT Extended] as JWT #lightgray
+[Display API] as D
+[Actions API] as AA
+[Flask Mail] as FM #lightgray
+
+[Async2Sync Adapter] as A2S
+
+[BeautifulSoup Adapter] as BSA #gray
+
+
+
+component Scraper as SM {
+   component Wrapper as W {
+    component Scraper as M
+    component Adapter as DA
+    M -(0 DA
+   }
+   component "Json Source Websites Repository" as Json
+   M -(0- Json
+}
+
+component "Account Management" as PM {
+  component "Authentication" as AS
+  component "Password Change" as PC
+  component "Password Reset" as PR
+  PR -(0- PC
+}
+
+BSA -- BSPA
+FMI -- FM
+UID -- D
+UIA -- AA
+BS - BSP
+DB -up- DBI
+UAS -- AS
+SDB --- DB
+BSA -up-( BSP
+M -up-( BSPA
+DA --( SDB
+JWT -- FJWT
+AS -up-( FJWT
+UI --( UAS
+AS --( DBI
+UIP -- PR
+UIC -- PC
+PR --( DBI
+PC --( DBI
+UI --( UIP
+UI --( UIC
+D --( DBI
+AA --( DBI
+UI --( UID
+UI --( UIA
+PR --( IA2S
+IA2S -- A2S
+A2S --( FMI
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+### 4. Plugins
+
+```puml
+@startuml
+skinparam componentStyle rectangle
+
+!include <tupadr3/font-awesome/database>
+
+title Seismo Scraping Logical View
+
+interface " " as BSP
+interface " " as FJWT
+interface " " as UAS
+interface " " as SDB
+interface " " as UIP
+interface " " as UIC
+interface " " as DBI
+interface " " as UID
+interface " " as UIA
+interface " " as FMI
+interface " " as IA2S
+interface " " as JWI
+interface "Extension Point" as EP
+
+
+[BeautifulSoup] as BS #lightgray
+[Database <$database{scale=0.33}>] as DB #lightgray
+[User Interface] as RealUI
+[Global API] as UI
+RealUI -(0-UI
+[Flask JWT Extended] as JWT #lightgray
+[Display API] as D
+[Flask Mail] as FM #lightgray
+
+[Async2Sync Adapter] as A2S 
+
+[Plugin Component] as PCC #gray
+
+PCC --> EP
+
+component "Actions API" as AAPI {
+  [Actions API] as AA
+  [Json Writer] as JW #gray
+}
+
+component Scraper as SM {
+   component Wrapper as W {
+    component Scraper as M
+    component Adapter as DA
+    M -(0 DA
+   }
+   component "Error Manager" as EM #gray
+   component "Json Source Websites Repository" as Json
+   M -(0- Json
+   EM -(0 M
+}
+
+component "Account Management" as PM {
+  component "Authentication" as AS
+  component "Password Change" as PC
+  component "Password Reset" as PR
+  PR -(0- PC
+}
+
+
+
+Json -- JWI
+JW --( JWI
+JW -- EP
+EM --( SDB
+FMI -- FM
+UID -- D
+UIA -- AA
+BS - BSP
+DB -up- DBI
+UAS -- AS
+SDB --- DB
+M -up-( BSP
+DA --( SDB
+JWT -- FJWT
+AS -up-( FJWT
+UI --( UAS
+AS --( DBI
+UIP -- PR
+UIC -- PC
+PR --( DBI
+PC --( DBI
+UI --( UIP
+UI --( UIC
+D --( DBI
+AA --( DBI
+UI --( UID
+UI --( UIA
+PR --( IA2S
+IA2S -- A2S
+A2S --( FMI
+
+
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Courier
+@enduml
+```
+
+The extension point is set to the Json Writer in the Actions API. The idea is to have a plugin which would use the Json Writer to add new sources website automatically. By automatically, I mean that the user would not have to write by himself the data that BeautifulSoup need to add a new website, but would only provide the name and url of the website, the plugin would then automatically add the webiste into the json file.
+
+
+### 5. Microservices
+
+```puml
+@startuml
+
+node "Frontend" {
+[User Interface] as UI
+}
+node "Proxy" {
+  [Proxy] as P
+}
+
+node "Articles Microservice" {
+  [Service API] as API
+  [Display API] as DAPI
+  [Actions API] as AAPI
+  
+  component "Scraper" as S {
+    [Scraper] as SC
+    [Json Source Websites Repository] as JSON
+  }
+  database "Database" {
+    [Database] as DB
+  }
+}
+
+
+node "Account Management Microservice" {
+  [Service API] as GAPI
+  [Authentication] as A
+  [Password Reset] as PR
+  [Password Change] as PC 
+  database "Accounts Database" {
+    [Accound Database] as ADB
+  }
+}
+
+API -- DAPI
+API -- AAPI
+GAPI -- A
+GAPI -- PR
+GAPI -- PC
+PR -- PC
+UI -- P:HTTPS
+P -- API: HTTPS
+P -- GAPI: HTTPS
+JSON -- SC
+DAPI -- DB
+AAPI -- DB
+A -- ADB
+PR -- ADB
+PC -- ADB
+SC -- DB
+
+@enduml
+```
