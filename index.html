@@ -287,6 +287,11 @@ footer {
 <a class="d3" href="#7-avoiding-cascading-failures">7. Avoiding cascading failures</a>
 <a class="d3" href="#8-mitigating-the-impact-of-non-available-external-dependencies">8. Mitigating the impact of non available external dependencies</a>
 <a class="d1" href="#ex---flexibility"><span class='task'>13.</span>  Flexibility</a>
+<a class="d3" href="#1-new-use-case-scenario">1. New use case scenario</a>
+<a class="d3" href="#2-supported-use-case-scenario">2. Supported use case scenario</a>
+<a class="d3" href="#3-breaking-change-of-an-external-component">3. Breaking Change of an external component</a>
+<a class="d3" href="#4-plugins">4. Plugins</a>
+<a class="d3" href="#5-microservices">5. Microservices</a>
 
         </nav>
 
@@ -1037,12 +1042,21 @@ is that the write operations take longer than with asynchronous replication, but
 <li><p>Assuming you have a centralized deployment with all stateful components storing their state in the same database, propose a strategy to split the monolith into at least two different microservices. Model the new logical/deployment view as well as the interfaces of each microservice you introduce.</p>
 </li>
 </ol>
-<section class="pass"><span>&starf;&star;&star;: </span>1, one out of 2-5.</section><section class="ok"><span>&starf;&starf;&star;: </span>1, two out of 2-5.</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1-5.</section></section>
+<section class="pass"><span>&starf;&star;&star;: </span>1, one out of 2-5.</section><section class="ok"><span>&starf;&starf;&star;: </span>1, two out of 2-5.</section><section class="exceed"><span>&starf;&starf;&starf;: </span>1-5.</section></section><h3 id="1-new-use-case-scenario">1. New use case scenario</h3>
+<p>The new use case scenario is more destinated to the developers of the systems than to the clients. It is about introducing a system of regognition and management of errors in the scraping procedure. Indeed, it can be that some articles that should have been present in the system actually are not, due to an error during the scraping (scraper not able to scrape an article, error 429, ...). So, basically, the system would store in the database all the different kinds of errors happening, for which articles/websites, and would allow to see those errors on the user interface too. </p>
+<img src="./puml_e28.svg"><img src="./puml_e29.svg"><img src="./puml_e30.svg"><h3 id="2-supported-use-case-scenario">2. Supported use case scenario</h3>
+<p>The new use case is to add a new source website directly from the user interface, so that the system would not have to be redeployed, each time a new webiste is added. So, basically, the Json Source Website Repository file is made editable from the user interface. </p>
+<img src="./puml_e31.svg"><h3 id="3-breaking-change-of-an-external-component">3. Breaking Change of an external component</h3>
+<p>The most important external component of the system is BeautifulSoup. In case of a breaking change the system has to adapt, else new articles cannot be scraped anymore. One solution would be to directly change the script to adapt the changes of the library. Alternatively, an adapter could be introduced between the scraper and BeautifulSoup so that the scraper itself do not have to change. Only the adapter changes, and we would not have to do the same changes multiple times. </p>
+<img src="./puml_e32.svg"><h3 id="4-plugins">4. Plugins</h3>
+<img src="./puml_e33.svg"><p>The extension point is set to the Json Writer in the Actions API. The idea is to have a plugin which would use the Json Writer to add new sources website automatically. By automatically, I mean that the user would not have to write by himself the data that BeautifulSoup need to add a new website, but would only provide the name and url of the website, the plugin would then automatically add the webiste into the json file.</p>
+<h3 id="5-microservices">5. Microservices</h3>
+<img src="./puml_e34.svg">
     </main>
 
 
 <footer>
-    5/11/2023, 1:23:04 PM
+    5/25/2023, 1:05:47 PM
 </footer>
 
 </body>
